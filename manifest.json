@@ -1,0 +1,17 @@
+{
+  "name": "Sort Panic",
+  "short_name": "Sort Panic",
+  "start_url": "https://sortpanic.com",
+  "display": "standalone",
+  "background_color": "#F5E6FF",
+  "theme_color": "#F5E6FF",
+  "description": "Don't Think. Just Sort. A Panic Studio production.",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

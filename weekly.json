@@ -1,1 +1,46 @@
+{
+  "schema_version": 1,
+  "week_id": "2026-W06",
+  "starts_utc": "2026-02-02T00:00:00Z",
+  "ends_utc": "2026-02-09T00:00:00Z",
+
+  "title": "Panic Sprint",
+  "tagline": "Don’t think. Just sort.",
+  "seed": 60214,
+
+  "challenge": {
+    "target_score": 55,
+    "time_limit_sec": 60,
+    "attempts": "unlimited"
+  },
+
+  "modifiers": {
+    "speed_multiplier": 1.08,
+    "spawn_multiplier": 1.05,
+
+    "swap": {
+      "enabled": true,
+      "once_per_run": true,
+      "trigger_ball_min": 6,
+      "trigger_ball_max": 14,
+      "post_swap_grace_ms": 250
+    },
+
+    "fakeout": {
+      "enabled": true,
+      "rate": 0.25,
+      "min_flip_delay_ms": 250,
+      "max_flip_delay_ms": 900,
+      "micro_pause_ms": 70
+    }
+  },
+
+  "theme": {
+    "bg_gradient_a": "#F5E6FF",
+    "bg_gradient_b": "#E6F5FF",
+    "left_color": "#B8D4FF",
+    "right_color": "#FFB8D1",
+    "accent": "#E6CCFF"
+  }
+}
 

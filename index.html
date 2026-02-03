@@ -1453,11 +1453,28 @@ function startChallenge() {
   document.getElementById("scoreDisplay").textContent = "0";
   document.getElementById("area").innerHTML = "";
 
-  // Apply challenge rules
+  // Apply challenge rules from JSON
   const leftZone = document.getElementById("left");
   const rightZone = document.getElementById("right");
   leftZone.classList.remove("swapped-zone", "narrow");
   rightZone.classList.remove("swapped-zone", "narrow");
+
+  // Apply narrow zones if specified
+  if (monthlyChallenge.narrow_zones) {
+    leftZone.classList.add("narrow");
+    rightZone.classList.add("narrow");
+  }
+  
+  // Set up swap controls if specified (like Level 2)
+  if (monthlyChallenge.swap_controls) {
+    // Set a random score when swap will happen
+    swapScore = Math.floor(Math.random() * 11) + 5; // Random between 5-15
+  }
+  
+  // Apply theme color if specified
+  if (monthlyChallenge.theme_color) {
+    document.getElementById("game").style.background = monthlyChallenge.theme_color;
+  }
 
   spawn();
   requestAnimationFrame(loop);
@@ -1540,7 +1557,13 @@ function spawn(isGraceBall = false) {
   current = document.createElement("div");
   current.className = "object";
   
-  // All levels use normal size balls now (80px)
+  // Ball size: use challenge setting or default 80px
+  const ballSize = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.ball_size) 
+    ? monthlyChallenge.ball_size 
+    : 80;
+  
+  current.style.width = `${ballSize}px`;
+  current.style.height = `${ballSize}px`;
   
   const color = Math.random() < .5 ? "blue" : "pink";
   current.dataset.color = color;
@@ -1570,16 +1593,31 @@ function spawn(isGraceBall = false) {
   
   speed = Math.min(450, baseSpeed + elapsed * speedIncrease);
   
-  // Grace ball: 20% slower for first ball after swap
+  // Grace ball: slower for first ball after certain events
   if (isGraceBall) {
-    speed = speed * 0.8;
+    const graceMultiplier = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.grace_ball_multiplier) 
+      ? monthlyChallenge.grace_ball_multiplier 
+      : 0.8;
+    speed = speed * graceMultiplier;
   }
 
-  // Level 3 & 5: Fake Out - color changes mid-fall
-  if ((currentLevel === 3 || currentLevel === 5) && Math.random() < 0.4) {
+  // Color change logic (Level 3, Level 5, or Challenge mode)
+  const shouldColorChange = (currentLevel === 3 || currentLevel === 5) ||
+    (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_chance > 0);
+  
+  const colorChangeChance = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_chance)
+    ? monthlyChallenge.color_change_chance
+    : 0.4;
+  
+  if (shouldColorChange && Math.random() < colorChangeChance) {
+    // Micro-pause duration: configurable for challenge mode
+    const pauseDuration = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_pause_ms)
+      ? monthlyChallenge.color_change_pause_ms
+      : 85;
+      
     colorChangeTimeout = setTimeout(() => {
       if (current && active) {
-        // Micro-pause: freeze the ball for 85ms at exact moment of color change
+        // Micro-pause: freeze the ball
         const savedSpeed = speed;
         speed = 0; // Freeze
         
@@ -1589,14 +1627,12 @@ function spawn(isGraceBall = false) {
         current.style.background = newColor === "blue" ? "var(--blue)" : "var(--pink)";
         current.style.transition = "background 0.3s";
         
-        // Resume after 85ms (brain registers, hand almost reacts)
+        // Resume after pause
         setTimeout(() => {
           if (current && active) {
             speed = savedSpeed;
           }
-        }, 85);
-        
-        // NO sound cue - silence makes it deadlier
+        }, pauseDuration);
       }
     }, Math.random() * 800 + 400);
   }
@@ -1687,8 +1723,11 @@ function tap(side) {
 
   let effectiveSide = side;
   
-  // Level 2 & 5: Swap controls - invert the side when swapped
-  if ((currentLevel === 2 || currentLevel === 5) && swapped) {
+  // Swap controls: Level 2, Level 5, or Challenge mode with swap_controls enabled
+  const shouldSwap = ((currentLevel === 2 || currentLevel === 5) && swapped) ||
+    (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.swap_controls && swapped);
+  
+  if (shouldSwap) {
     effectiveSide = side === "left" ? "right" : "left";
   }
 
@@ -1717,8 +1756,11 @@ function tap(side) {
     // Update combo
     updateCombo();
     
-    // Level 2 & 5: Swap at score 8
-    if ((currentLevel === 2 || currentLevel === 5) && score === swapScore && !swapped) {
+    // Swap trigger: Level 2, Level 5, or Challenge mode with swap_controls
+    const shouldTriggerSwap = ((currentLevel === 2 || currentLevel === 5) && score === swapScore && !swapped) ||
+      (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.swap_controls && score === swapScore && !swapped);
+    
+    if (shouldTriggerSwap) {
       swapped = true;
       
       // Don't swap immediately during success moment

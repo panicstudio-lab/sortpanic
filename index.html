@@ -127,6 +127,19 @@ body::before {
   margin-top: 4px;
 }
 
+.level-tile .unlock-hint {
+  font-size: 11px;
+  color: #4CAF50;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.level-tile .unlock-requirement {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+
 .level-tile.locked {
   opacity: .35;
   cursor: default;
@@ -1383,10 +1396,48 @@ function showLevelSelect() {
   ls.innerHTML = "";
   ls.classList.remove("hidden");
 
-  // Add monthly challenge tile at the top
+  // Add regular levels first
+  levels.forEach(l => {
+    const tile = document.createElement("div");
+    const isUnlocked = unlocked[l.id];
+    tile.className = "level-tile" + (isUnlocked ? "" : " locked");
+    
+    let content = `<div>LEVEL ${l.id}: ${l.name}<br><span>${l.description}</span>`;
+    
+    if (isUnlocked) {
+      // Show best score if exists
+      if (bestScores[l.id]) {
+        content += `<div class="best-score">Best: ${bestScores[l.id]}</div>`;
+      }
+      
+      // Show unlock requirement for next level (if not final level)
+      if (l.unlock && l.id < levels.length) {
+        const nextLevel = l.id + 1;
+        const nextLevelUnlocked = unlocked[nextLevel];
+        if (!nextLevelUnlocked) {
+          content += `<div class="unlock-hint">🔓 Score ${l.unlock} to unlock L${nextLevel}</div>`;
+        }
+      }
+    } else {
+      // Locked level - show unlock requirement
+      const prevLevel = levels[l.id - 2]; // levels array is 0-indexed
+      if (prevLevel && prevLevel.unlock) {
+        content += `<div class="unlock-requirement">Unlock at ${prevLevel.unlock} points</div>`;
+      }
+    }
+    
+    content += `</div><div>${isUnlocked ? "▶" : "🔒"}</div>`;
+    
+    tile.innerHTML = content;
+    if (isUnlocked) tile.onclick = () => startLevel(l.id);
+    ls.appendChild(tile);
+  });
+  
+  // Add monthly challenge tile at the bottom
   if (monthlyChallenge) {
     const challengeTile = document.createElement("div");
     challengeTile.className = "level-tile challenge-tile";
+    challengeTile.style.marginTop = "20px"; // Extra space above challenge
     const daysLeft = getDaysRemaining(monthlyChallenge.month);
     
     let content = `<div>🏆 ${monthlyChallenge.challenge_name.toUpperCase()}<br><span>${monthlyChallenge.description}</span>`;
@@ -1398,24 +1449,8 @@ function showLevelSelect() {
     challengeTile.onclick = () => startChallenge();
     ls.appendChild(challengeTile);
   }
-
-  levels.forEach(l => {
-    const tile = document.createElement("div");
-    const isUnlocked = unlocked[l.id];
-    tile.className = "level-tile" + (isUnlocked ? "" : " locked");
-    
-    let content = `<div>LEVEL ${l.id}: ${l.name}<br><span>${l.description}</span>`;
-    if (bestScores[l.id]) {
-      content += `<div class="best-score">Best: ${bestScores[l.id]}</div>`;
-    }
-    content += `</div><div>${isUnlocked ? "▶" : "🔒"}</div>`;
-    
-    tile.innerHTML = content;
-    if (isUnlocked) tile.onclick = () => startLevel(l.id);
-    ls.appendChild(tile);
-  });
   
-  // Add reset intros button at bottom
+  // Add reset intros button at very bottom
   const resetBtn = document.createElement("button");
   resetBtn.className = "secondary";
   resetBtn.textContent = "🔄 Watch Intros Again";

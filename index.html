@@ -1700,10 +1700,12 @@ function tap(side) {
     score++;
     document.getElementById("scoreDisplay").textContent = score;
     
-    // Check if player just reached unlock threshold
-    const currentLevelData = levels[currentLevel - 1];
-    if (currentLevelData.unlock && score === currentLevelData.unlock) {
-      createUnlockBurst();
+    // Check if player just reached unlock threshold (only for regular levels)
+    if (currentLevel !== 'challenge') {
+      const currentLevelData = levels[currentLevel - 1];
+      if (currentLevelData && currentLevelData.unlock && score === currentLevelData.unlock) {
+        createUnlockBurst();
+      }
     }
     
     // Particle effect

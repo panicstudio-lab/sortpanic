@@ -136,6 +136,31 @@ body::before {
   transform: scale(.97);
 }
 
+/* Challenge Tile Styling */
+.challenge-tile {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important;
+  border: 3px solid #FF6B6B;
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4) !important;
+  animation: challengePulse 2s ease-in-out infinite;
+  margin-bottom: 20px;
+}
+
+.challenge-tile::before {
+  display: none; /* No color bar for challenge */
+}
+
+@keyframes challengePulse {
+  0%, 100% { box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4); }
+  50% { box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6); }
+}
+
+.challenge-timer, .challenge-target {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
 /* ---------- GAME ---------- */
 #game {
   position: absolute;
@@ -1273,6 +1298,7 @@ const levels = [
 
 let unlocked = JSON.parse(localStorage.getItem("unlocked") || '{"1":true}');
 let bestScores = JSON.parse(localStorage.getItem("bestScores") || '{}');
+let monthlyChallenge = null; // Will be loaded from server
 let currentLevel = 1;
 let score = 0;
 let combo = 0;
@@ -1314,6 +1340,38 @@ function dismissInstall() {
   document.getElementById('installPrompt').classList.remove('show');
 }
 
+/* ---------- MONTHLY CHALLENGE ---------- */
+async function loadMonthlyChallenge() {
+  const CHALLENGE_URL = 'https://sortpanic.com/monthly-challenge.json';
+  
+  try {
+    const response = await fetch(CHALLENGE_URL);
+    const challenge = await response.json();
+    
+    // Cache it locally
+    localStorage.setItem('monthly-challenge', JSON.stringify(challenge));
+    localStorage.setItem('challenge-last-updated', Date.now());
+    
+    monthlyChallenge = challenge;
+  } catch (error) {
+    // Use cached version if offline
+    const cached = localStorage.getItem('monthly-challenge');
+    if (cached) {
+      monthlyChallenge = JSON.parse(cached);
+    }
+  }
+}
+
+function getDaysRemaining(monthString) {
+  // monthString format: "2026-02"
+  const [year, month] = monthString.split('-').map(Number);
+  const lastDay = new Date(year, month, 0); // Last day of the month
+  const today = new Date();
+  const diffTime = lastDay - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+}
+
 /* ---------- LEVEL SELECT ---------- */
 function showLevelSelect() {
   active = false;
@@ -1324,6 +1382,22 @@ function showLevelSelect() {
   const ls = document.getElementById("levelSelect");
   ls.innerHTML = "";
   ls.classList.remove("hidden");
+
+  // Add monthly challenge tile at the top
+  if (monthlyChallenge) {
+    const challengeTile = document.createElement("div");
+    challengeTile.className = "level-tile challenge-tile";
+    const daysLeft = getDaysRemaining(monthlyChallenge.month);
+    
+    let content = `<div>🏆 ${monthlyChallenge.challenge_name.toUpperCase()}<br><span>${monthlyChallenge.description}</span>`;
+    content += `<div class="challenge-timer">⏰ ${daysLeft} days left</div>`;
+    content += `<div class="challenge-target">🎯 Target: ${monthlyChallenge.target_score}</div>`;
+    content += `</div><div>▶</div>`;
+    
+    challengeTile.innerHTML = content;
+    challengeTile.onclick = () => startChallenge();
+    ls.appendChild(challengeTile);
+  }
 
   levels.forEach(l => {
     const tile = document.createElement("div");
@@ -1354,6 +1428,39 @@ function resetIntros() {
   seenIntros = {};
   localStorage.setItem('seenIntros', JSON.stringify(seenIntros));
   alert("Intro animations reset! You'll see them again when you play.");
+}
+
+/* ---------- CHALLENGE MODE ---------- */
+function startChallenge() {
+  if (!monthlyChallenge) return;
+  
+  // Set up challenge mode
+  currentLevel = 'challenge';
+  score = 0;
+  combo = 0;
+  maxCombo = 0;
+  perfect = true;
+  swapped = false;
+  swapping = false;
+  active = true;
+  startTime = performance.now();
+  lastFrame = performance.now();
+
+  document.getElementById("titleScreen").classList.add("hidden");
+  document.getElementById("levelSelect").classList.add("hidden");
+  document.getElementById("gameOver").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  document.getElementById("scoreDisplay").textContent = "0";
+  document.getElementById("area").innerHTML = "";
+
+  // Apply challenge rules
+  const leftZone = document.getElementById("left");
+  const rightZone = document.getElementById("right");
+  leftZone.classList.remove("swapped-zone", "narrow");
+  rightZone.classList.remove("swapped-zone", "narrow");
+
+  spawn();
+  requestAnimationFrame(loop);
 }
 
 /* ---------- PARTICLE EFFECTS ---------- */
@@ -1455,6 +1562,10 @@ function spawn(isGraceBall = false) {
   } else if (currentLevel === 5) {
     baseSpeed = 200;
     speedIncrease = 18;
+  } else if (currentLevel === 'challenge' && monthlyChallenge) {
+    // Apply challenge speed multiplier
+    baseSpeed = 180 * (monthlyChallenge.ball_speed_multiplier || 1);
+    speedIncrease = 12 * (monthlyChallenge.ball_speed_multiplier || 1);
   }
   
   speed = Math.min(450, baseSpeed + elapsed * speedIncrease);
@@ -1680,16 +1791,18 @@ function endGame() {
     localStorage.setItem("bestScores", JSON.stringify(bestScores));
   }
 
-  // Check for unlock
-  const currentLevelData = levels[currentLevel - 1];
+  // Check for unlock (only for regular levels, not challenge)
   let unlockMessage = "";
-  
-  if (currentLevelData.unlock && score >= currentLevelData.unlock) {
-    const nextLevel = currentLevel + 1;
-    if (!unlocked[nextLevel] && nextLevel <= levels.length) {
-      unlocked[nextLevel] = true;
-      localStorage.setItem("unlocked", JSON.stringify(unlocked));
-      unlockMessage = `🎉 Level ${nextLevel} Unlocked!`;
+  if (currentLevel !== 'challenge') {
+    const currentLevelData = levels[currentLevel - 1];
+    
+    if (currentLevelData && currentLevelData.unlock && score >= currentLevelData.unlock) {
+      const nextLevel = currentLevel + 1;
+      if (!unlocked[nextLevel] && nextLevel <= levels.length) {
+        unlocked[nextLevel] = true;
+        localStorage.setItem("unlocked", JSON.stringify(unlocked));
+        unlockMessage = `🎉 Level ${nextLevel} Unlocked!`;
+      }
     }
   }
 
@@ -1709,11 +1822,25 @@ function endGame() {
   }
   document.getElementById("stats").textContent = stats;
 
-  // Show unlock notice
+  // Show unlock notice with auto-start
   const unlockNotice = document.getElementById("unlockNotice");
   if (unlockMessage) {
+    const nextLevel = currentLevel + 1;
+    let countdown = 3;
     unlockNotice.className = "unlock-notice";
-    unlockNotice.textContent = unlockMessage;
+    unlockNotice.textContent = `${unlockMessage} Starting in ${countdown}...`;
+    
+    const countdownInterval = setInterval(() => {
+      countdown--;
+      if (countdown > 0) {
+        unlockNotice.textContent = `${unlockMessage} Starting in ${countdown}...`;
+      } else {
+        clearInterval(countdownInterval);
+        // Auto-start the newly unlocked level
+        document.getElementById("gameOver").classList.add("hidden");
+        startLevel(nextLevel);
+      }
+    }, 1000);
   } else {
     unlockNotice.className = "";
     unlockNotice.textContent = "";
@@ -1731,16 +1858,14 @@ function retry() {
 
 /* ---------- SHARE ---------- */
 async function shareScore() {
-  const levelName = levels[currentLevel - 1].name;
-  const text = `I scored ${score} on Sort Panic - Level ${currentLevel}: ${levelName}! Can you beat it? 🎯`;
-  const url = window.location.href;
+  const highScore = bestScores[currentLevel] || score;
+  const text = `I panicked at ${highScore} 😭 Can you beat me? sortpanic.com`;
   
   if (navigator.share) {
     try {
       await navigator.share({
         title: 'Sort Panic',
-        text: text,
-        url: url
+        text: text
       });
     } catch (err) {
       // User cancelled or share failed
@@ -1785,6 +1910,9 @@ document.getElementById("right").addEventListener("touchstart", (e) => {
 });
 
 /* ---------- INIT ---------- */
+// Load monthly challenge on startup
+loadMonthlyChallenge();
+
 // Auto-init audio on first interaction
 document.addEventListener('click', () => {
   if (!audioCtx) {

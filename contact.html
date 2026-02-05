@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact - Sort Panic</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #F5E6FF 0%, #E6F5FF 100%);
+  color: #2D3748;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  padding: 60px 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.emoji {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #2D3748;
+}
+
+p {
+  font-size: 1.1rem;
+  color: #4A5568;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.contact-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.contact-card {
+  background: #F7FAFC;
+  padding: 25px;
+  border-radius: 15px;
+  border: 2px solid #E2E8F0;
+  transition: all 0.3s;
+  text-align: left;
+}
+
+.contact-card:hover {
+  border-color: #667eea;
+  background: #F5E6FF;
+  transform: translateY(-3px);
+}
+
+.contact-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #2D3748;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-card p {
+  margin: 0;
+  font-size: 1rem;
+  color: #718096;
+}
+
+.contact-card a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-card a:hover {
+  text-decoration: underline;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 40px;
+  padding: 15px 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s;
+}
+
+.back-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 40px 30px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="emoji">👋</div>
+  <h1>Get in Touch</h1>
+  <p>Have feedback, found a bug, or just want to say hi? We'd love to hear from you!</p>
+  
+  <div class="contact-methods">
+    
+    <div class="contact-card">
+      <h3>📧 Email</h3>
+      <p><a href="mailto:hello@sortpanic.com">hello@sortpanic.com</a></p>
+    </div>
+    
+    <div class="contact-card">
+      <h3>🐦 Twitter</h3>
+      <p><a href="https://twitter.com/sortpanic" target="_blank">@sortpanic</a></p>
+    </div>
+    
+    <div class="contact-card">
+      <h3>💬 Discord</h3>
+      <p>Join our community: <a href="https://discord.gg/sortpanic" target="_blank">discord.gg/sortpanic</a></p>
+    </div>
+    
+    <div class="contact-card">
+      <h3>🐛 Bug Reports</h3>
+      <p>Found a glitch? Email us with your device info and what happened.</p>
+    </div>
+    
+  </div>
+  
+  <a href="/" class="back-link">← Back to Sort Panic</a>
+  
+  <p style="margin-top: 40px; font-size: 0.9rem; color: #718096;">
+    We typically respond within 24-48 hours.
+  </p>
+</div>
+
+</body>
+</html>

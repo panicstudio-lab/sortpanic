@@ -82,6 +82,28 @@ a:hover {
   color: #667eea;
   font-weight: 600;
 }
+
+.highlight {
+  background: #EBF8FF;
+  border-left: 4px solid #4299E1;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 30px 0;
+}
+
+.highlight strong {
+  color: #2C5282;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 40px 30px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+}
 </style>
 </head>
 <body>
@@ -90,45 +112,65 @@ a:hover {
   <a href="/" class="back-link">← Back to Sort Panic</a>
   
   <h1>Privacy Policy</h1>
-  <div class="date">Last updated: February 3, 2026</div>
+  <div class="date">Last updated: February 5, 2026</div>
   
-  <p>At Sort Panic, your privacy matters. This policy explains what data we collect and how we use it.</p>
+  <p>At Sort Panic, we believe in transparency. This policy explains exactly what data we collect (spoiler: almost nothing) and how we use it.</p>
   
-  <h2>What We Collect</h2>
+  <div class="highlight">
+    <strong>The Short Version:</strong> We don't collect personal data. Your game progress stays on your device. No tracking, no ads (for now), no accounts required.
+  </div>
+  
+  <h2>Do You Collect Personal Data?</h2>
+  <p><strong>No.</strong> We don't collect, store, or process any personally identifiable information. Sort Panic doesn't require accounts, emails, names, or any personal details.</p>
+  
+  <h2>What Data Does the App Store?</h2>
+  <p>All game data is stored locally on your device:</p>
   <ul>
-    <li><strong>Local Game Data:</strong> Your high scores and level progress are stored locally on your device.</li>
-    <li><strong>Monthly Challenge:</strong> The app fetches the current monthly challenge from our server.</li>
-    <li><strong>No Personal Information:</strong> We don't collect names, emails, or any personally identifiable information.</li>
+    <li><strong>High scores:</strong> Saved on your device only</li>
+    <li><strong>Unlocked levels:</strong> Saved on your device only</li>
+    <li><strong>Game preferences:</strong> Saved on your device only</li>
   </ul>
+  <p>We cannot access this data. If you uninstall the app, all data is deleted.</p>
   
-  <h2>What We Don't Do</h2>
+  <h2>Do You Use Cookies or Analytics?</h2>
+  <p><strong>Currently: No.</strong> We do not use cookies, analytics, or tracking tools of any kind. Your gameplay is private.</p>
+  <p>If this changes in the future (for example, to understand which levels are too hard), we will update this policy and notify users.</p>
+  
+  <h2>What About the Monthly Challenge?</h2>
+  <p>The app fetches a small configuration file from <code>sortpanic.com/monthly-challenge.json</code> to display the current month's challenge. This request does not include any personal information or tracking data.</p>
+  <p>Our web host (GitHub Pages) may log standard server information (IP address, timestamp) as described in <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank">GitHub's Privacy Policy</a>.</p>
+  
+  <h2>Will You Show Ads?</h2>
+  <p><strong>Not currently.</strong> Sort Panic has no ads right now.</p>
+  <p>If we add ads in the future (for example, via AdMob), ad networks may collect data like:</p>
   <ul>
-    <li>We don't sell your data</li>
-    <li>We don't track you across websites</li>
-    <li>We don't require accounts or sign-ins</li>
-    <li>We don't use analytics or advertising trackers</li>
+    <li>Device information (model, OS version)</li>
+    <li>Approximate location (for regional ads)</li>
+    <li>Ad interaction data (clicks, views)</li>
   </ul>
-  
-  <h2>Data Storage</h2>
-  <p>All your game data (scores, unlocked levels) is stored locally on your device. We don't have access to it.</p>
-  
-  <h2>Monthly Challenge</h2>
-  <p>The app fetches a small JSON file from sortpanic.com to display the current monthly challenge. This request does not include any personal information.</p>
+  <p>If this happens, we will update this policy first and give users the option to support us through other means (like a one-time purchase to remove ads).</p>
   
   <h2>Third-Party Services</h2>
-  <p>We use GitHub Pages to host our website and monthly challenge file. GitHub may collect standard web server logs (IP address, browser type) as described in their <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank">privacy policy</a>.</p>
+  <p>Sort Panic may use these third-party services:</p>
+  <ul>
+    <li><strong>GitHub Pages:</strong> Hosts our website and monthly challenge file. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank">GitHub's Privacy Policy</a>.</li>
+    <li><strong>Google Play Store:</strong> If you download from the Play Store, Google's policies apply. See <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
+  </ul>
   
   <h2>Children's Privacy</h2>
-  <p>Sort Panic is suitable for all ages. We don't knowingly collect information from children.</p>
+  <p>Sort Panic is suitable for all ages. We don't knowingly collect information from anyone, including children under 13.</p>
   
   <h2>Changes to This Policy</h2>
-  <p>We may update this policy occasionally. The "Last updated" date will reflect any changes.</p>
+  <p>If we make changes to this privacy policy, we will update the "Last updated" date at the top. Significant changes will be announced in the app or on our website.</p>
+  
+  <h2>Your Rights</h2>
+  <p>Since we don't collect personal data, there's nothing to request, delete, or export. Your data stays on your device, and you control it completely.</p>
   
   <h2>Contact Us</h2>
-  <p>Questions about privacy? Contact us at: <a href="/contact">Contact Page</a></p>
+  <p>Questions about privacy? Email us at: <a href="mailto:support@sortpanic.com">support@sortpanic.com</a></p>
   
   <p style="margin-top: 60px; padding-top: 40px; border-top: 1px solid #E2E8F0; color: #718096; font-size: 0.9rem;">
-    <strong>TL;DR:</strong> We don't collect your data. Your scores stay on your device. No accounts needed. That's it.
+    <strong>Built with respect for your privacy.</strong> No dark patterns, no data harvesting, no surprises.
   </p>
 </div>
 

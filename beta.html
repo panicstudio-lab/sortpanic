@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beta Test - Sort Panic</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #F5E6FF 0%, #E6F5FF 100%);
+  color: #2D3748;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.emoji {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #2D3748;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: #718096;
+}
+
+.badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.section {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #2D3748;
+}
+
+.steps {
+  list-style: none;
+  counter-reset: step-counter;
+}
+
+.steps li {
+  counter-increment: step-counter;
+  margin-bottom: 25px;
+  padding-left: 60px;
+  position: relative;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.steps li strong {
+  color: #667eea;
+}
+
+.download-btn {
+  display: inline-block;
+  padding: 25px 60px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s;
+  margin: 30px 0;
+}
+
+.download-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(102, 126, 234, 0.6);
+}
+
+.version-info {
+  display: inline-block;
+  margin-left: 15px;
+  font-size: 0.9rem;
+  color: #718096;
+  font-weight: 400;
+}
+
+.warning {
+  background: #FFF5F5;
+  border-left: 4px solid #FC8181;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.warning-title {
+  font-weight: 700;
+  color: #C53030;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.warning p {
+  color: #742A2A;
+  line-height: 1.6;
+}
+
+.info {
+  background: #EBF8FF;
+  border-left: 4px solid #4299E1;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.info-title {
+  font-weight: 700;
+  color: #2C5282;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.info p {
+  color: #2C5282;
+  line-height: 1.6;
+}
+
+.feedback-section {
+  text-align: center;
+  padding: 40px;
+}
+
+.feedback-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #2D3748;
+}
+
+.feedback-section p {
+  font-size: 1.1rem;
+  color: #718096;
+  margin-bottom: 25px;
+}
+
+.contact-btn {
+  display: inline-block;
+  padding: 15px 40px;
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.contact-btn:hover {
+  background: #667eea;
+  color: white;
+}
+
+.back-link {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.back-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.back-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .section {
+    padding: 25px;
+  }
+  
+  .download-btn {
+    padding: 20px 40px;
+    font-size: 1.2rem;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .version-info {
+    display: block;
+    margin: 10px 0 0 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Header -->
+  <div class="header">
+    <div class="emoji">🧪</div>
+    <h1>Join the Beta!</h1>
+    <p class="subtitle">Be among the first to experience Sort Panic</p>
+    <div class="badge">Android Beta • Limited Time</div>
+  </div>
+  
+  <!-- Download Section -->
+  <div class="section" style="text-align: center;">
+    <h2>Download Sort Panic Beta</h2>
+    <p style="color: #718096; margin-bottom: 20px;">Get instant access to the latest version</p>
+    
+    <a href="/downloads/sort-panic.apk" class="download-btn" download>
+      📥 Download APK
+      <span class="version-info">v1.0 Beta</span>
+    </a>
+    
+    <div class="info">
+      <div class="info-title">✅ What You Get</div>
+      <p>
+        • 5 brain-melting levels<br>
+        • Monthly challenges<br>
+        • No ads, no accounts<br>
+        • Direct updates from us
+      </p>
+    </div>
+  </div>
+  
+  <!-- Installation Instructions -->
+  <div class="section">
+    <h2>📱 How to Install</h2>
+    
+    <ol class="steps">
+      <li>
+        <strong>Download the APK</strong><br>
+        Click the download button above to save the APK to your device
+      </li>
+      
+      <li>
+        <strong>Enable Unknown Sources</strong><br>
+        Go to Settings → Security → Enable "Install from Unknown Sources" or "Allow from this source"
+      </li>
+      
+      <li>
+        <strong>Open the APK</strong><br>
+        Find the downloaded file in your Downloads folder and tap it
+      </li>
+      
+      <li>
+        <strong>Install & Play!</strong><br>
+        Follow the prompts to install, then open Sort Panic and start panicking! 😱
+      </li>
+    </ol>
+    
+    <div class="warning">
+      <div class="warning-title">⚠️ Android Only</div>
+      <p>This beta is currently for Android devices only. iOS version coming soon! The app requires Android 7.0 or higher.</p>
+    </div>
+  </div>
+  
+  <!-- Feedback Section -->
+  <div class="section feedback-section">
+    <h3>💬 Help Us Improve</h3>
+    <p>Found a bug? Have ideas? Your feedback shapes the game!</p>
+    <a href="/contact.html" class="contact-btn">Send Feedback</a>
+  </div>
+  
+  <!-- What to Expect -->
+  <div class="section">
+    <h2>🎮 What to Expect</h2>
+    <p style="line-height: 1.8; color: #4A5568;">
+      <strong style="color: #2D3748;">This is a beta version.</strong> You might encounter bugs or rough edges. That's okay! Your feedback helps us build something amazing. We're actively developing and will push updates regularly.
+    </p>
+    <br>
+    <p style="line-height: 1.8; color: #4A5568;">
+      <strong style="color: #2D3748;">What works:</strong> All 5 levels, monthly challenges, score tracking, and the core sorting mechanics.
+    </p>
+    <br>
+    <p style="line-height: 1.8; color: #4A5568;">
+      <strong style="color: #2D3748;">Coming soon:</strong> Global leaderboards, more challenges, sound effects, and achievements.
+    </p>
+  </div>
+  
+  <!-- Back Link -->
+  <div class="back-link">
+    <a href="/">← Back to Sort Panic</a>
+  </div>
+
+</div>
+
+</body>
+</html>

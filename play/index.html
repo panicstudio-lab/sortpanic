@@ -416,168 +416,159 @@ body::before {
 /* ---------- LEVEL COMPLETE SCREEN ---------- */
 #levelComplete {
   background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 50%, var(--peach) 100%);
-  padding: 40px 20px;
+  padding: 20px;
 }
 
 .celebration-screen {
   max-width: 500px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 #levelComplete h2 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: white;
   text-align: center;
-  margin-bottom: 30px;
+  margin: 10px 0;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-  animation: fadeInScale 0.5s ease-out;
 }
 
-.complete-score {
+.complete-card {
   background: white;
   border-radius: 20px;
-  padding: 30px;
-  margin-bottom: 30px;
+  padding: 20px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-  text-align: center;
 }
 
-.score-label {
-  font-size: 0.9rem;
-  color: #999;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.score-section {
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 15px;
 }
 
 .score-value {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: 700;
   color: var(--purple);
-  margin-bottom: 10px;
+  line-height: 1;
 }
 
 .target-met {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #4CAF50;
   font-weight: 600;
+  margin-top: 5px;
 }
 
-.unlock-banner {
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+.unlock-section {
   text-align: center;
 }
 
 .unlock-text {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--pink);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 .unlock-level-name {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--dark);
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .unlock-level-desc {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #666;
   font-style: italic;
 }
 
 /* ---------- HIGH SCORE SCREEN ---------- */
 #highScore {
-  padding: 40px 20px;
+  padding: 20px;
   background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
 }
 
 .highscore-screen {
   max-width: 500px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 #highScore h2 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: white;
   text-align: center;
-  margin-bottom: 30px;
+  margin: 10px 0;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-  animation: fadeInScale 0.5s ease-out;
 }
 
-.score-comparison {
+.highscore-card {
   background: white;
   border-radius: 20px;
-  padding: 30px;
-  margin-bottom: 20px;
+  padding: 20px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.2);
   text-align: center;
 }
 
-.new-score {
-  margin-bottom: 20px;
+.score-display {
+  margin-bottom: 15px;
 }
 
-#newHighScore {
-  font-size: 4rem;
+.new-score-value {
+  font-size: 3.5rem;
   font-weight: 700;
   color: #FFD700;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  line-height: 1;
 }
 
-.previous-score {
-  padding-top: 15px;
+.score-improvement {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 8px;
+}
+
+.previous-label {
+  margin-right: 5px;
+}
+
+.stats-line {
+  padding-top: 12px;
   border-top: 2px solid #f0f0f0;
-}
-
-.score-label-small {
-  font-size: 0.8rem;
-  color: #999;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-}
-
-.score-value-small {
-  font-size: 1.5rem;
-  color: #999;
-  font-weight: 600;
-}
-
-#highScoreStats {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #666;
-  text-align: center;
+  min-height: 20px;
 }
 
 /* ---------- BUTTON STYLES ---------- */
-.button-group {
+.button-row {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-button.primary {
-  background: linear-gradient(135deg, var(--pink), var(--purple));
+button.compact {
+  font-size: 0.9rem;
+  padding: 12px 20px;
+  flex: 1;
+  min-width: 90px;
+  max-width: 150px;
 }
 
-button.large {
-  font-size: 1.3rem;
-  padding: 20px 50px;
+button.primary.large {
+  font-size: 1.2rem;
+  padding: 16px 40px;
+  width: 100%;
   animation: pulse 2s infinite;
 }
 
@@ -587,19 +578,8 @@ button.large {
     box-shadow: 0 6px 20px rgba(230, 204, 255, 0.3);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.02);
     box-shadow: 0 8px 30px rgba(230, 204, 255, 0.5);
-  }
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -620,6 +600,10 @@ button {
 
 button:active {
   transform: scale(0.95);
+}
+
+button.primary {
+  background: linear-gradient(135deg, var(--pink), var(--purple));
 }
 
 button.secondary {
@@ -1304,24 +1288,23 @@ button.secondary {
 <!-- LEVEL COMPLETE + UNLOCK -->
 <div id="levelComplete" class="screen hidden">
   <div class="celebration-screen">
-    <h2>🎉 LEVEL COMPLETE! 🎉</h2>
-    <div class="complete-score">
-      <div class="score-label">Your Score</div>
-      <div class="score-value" id="completeScore">0</div>
-      <div class="target-met" id="targetMet">Target: 60 ✅</div>
-    </div>
-    <div class="unlock-banner">
-      <div class="unlock-text">LEVEL UNLOCKED!</div>
-      <div class="unlock-level" id="unlockedLevelInfo">
+    <h2>🎉 LEVEL COMPLETE 🎉</h2>
+    <div class="complete-card">
+      <div class="score-section">
+        <div class="score-value" id="completeScore">0</div>
+        <div class="target-met" id="targetMet">Target: 60 ✅</div>
+      </div>
+      <div class="unlock-section">
+        <div class="unlock-text">LEVEL UNLOCKED!</div>
         <div class="unlock-level-name" id="unlockedLevelName">Level 2: Swap</div>
         <div class="unlock-level-desc" id="unlockedLevelDesc">Controls betray you</div>
       </div>
     </div>
-    <div class="button-group">
-      <button id="shareBtnComplete" onclick="shareScore()">📤 Share Score</button>
-      <button class="primary large" id="playNextBtn" onclick="playNextLevel()">▶ PLAY NEXT LEVEL</button>
-      <button onclick="retry()">↺ Retry This Level</button>
-      <button class="secondary" onclick="showLevelSelect()">← Level Select</button>
+    <button class="primary large" id="playNextBtn" onclick="playNextLevel()">▶ PLAY LEVEL 2</button>
+    <div class="button-row">
+      <button class="compact" id="shareBtnComplete" onclick="shareScore()">📤 Share</button>
+      <button class="compact secondary" onclick="retry()">↺ Retry</button>
+      <button class="compact secondary" onclick="showLevelSelect()">← Back</button>
     </div>
   </div>
 </div>
@@ -1329,22 +1312,21 @@ button.secondary {
 <!-- HIGH SCORE -->
 <div id="highScore" class="screen hidden">
   <div class="highscore-screen">
-    <h2>🏆 NEW HIGH SCORE! 🏆</h2>
-    <div class="score-comparison">
-      <div class="new-score">
-        <div class="score-label">New Score</div>
-        <div class="score-value" id="newHighScore">0</div>
+    <h2>🏆 NEW HIGH SCORE 🏆</h2>
+    <div class="highscore-card">
+      <div class="score-display">
+        <div class="new-score-value" id="newHighScore">0</div>
+        <div class="score-improvement">
+          <span class="previous-label">Previous:</span>
+          <span id="previousScore">0</span>
+        </div>
       </div>
-      <div class="previous-score">
-        <div class="score-label-small">Previous Best</div>
-        <div class="score-value-small" id="previousScore">0</div>
-      </div>
+      <div class="stats-line" id="highScoreStats"></div>
     </div>
-    <div class="stats" id="highScoreStats"></div>
-    <div class="button-group">
-      <button id="shareBtnHigh" onclick="shareScore()">📤 Share Score</button>
-      <button class="primary large" onclick="retry()">↺ Play Again</button>
-      <button class="secondary" onclick="showLevelSelect()">← Level Select</button>
+    <button class="primary large" onclick="retry()">↺ Play Again</button>
+    <div class="button-row">
+      <button class="compact" id="shareBtnHigh" onclick="shareScore()">📤 Share</button>
+      <button class="compact secondary" onclick="showLevelSelect()">← Back</button>
     </div>
   </div>
 </div>

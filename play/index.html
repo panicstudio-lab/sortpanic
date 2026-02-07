@@ -2264,25 +2264,37 @@ function retry() {
 async function shareScore() {
   // Use the actual score from this game, not best score
   const shareText = `I panicked at ${score} 😭 Can you beat me?`;
+  const shareUrl = 'https://sortpanic.com/play';
+  const fullShareText = `${shareText} ${shareUrl}`;
   
+  // Try Web Share API first (works in browsers, may not work in WebView)
   if (navigator.share) {
     try {
       await navigator.share({
         title: 'Sort Panic',
         text: shareText,
-        url: 'https://sortpanic.com/play'
+        url: shareUrl
       });
+      return; // Successfully shared
     } catch (err) {
-      // User cancelled or share failed, try clipboard
-      if (err.name !== 'AbortError') {
-        // For clipboard, include URL in text
-        copyToClipboard(`${shareText} sortpanic.com/play`);
+      if (err.name === 'AbortError') {
+        return; // User cancelled
       }
+      // Share failed, continue to fallbacks
     }
-  } else {
-    // No native share, use clipboard with URL
-    copyToClipboard(`${shareText} sortpanic.com/play`);
   }
+  
+  // Try Android Intent (works in WebView/APK)
+  try {
+    const intentUrl = `intent://send#Intent;scheme=android.intent.action;action=SEND;type=text/plain;S.android.intent.extra.TEXT=${encodeURIComponent(fullShareText)};end`;
+    window.location.href = intentUrl;
+    return;
+  } catch (err) {
+    // Intent failed, continue
+  }
+  
+  // Final fallback: clipboard
+  copyToClipboard(fullShareText);
 }
 
 function copyToClipboard(text) {

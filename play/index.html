@@ -2263,7 +2263,7 @@ function retry() {
 /* ---------- SHARE ---------- */
 async function shareScore() {
   // Use the actual score from this game, not best score
-  const shareText = `I panicked at ${score} 😭 Can you beat me? sortpanic.com/play`;
+  const shareText = `I panicked at ${score} 😭 Can you beat me?`;
   
   if (navigator.share) {
     try {
@@ -2275,12 +2275,13 @@ async function shareScore() {
     } catch (err) {
       // User cancelled or share failed, try clipboard
       if (err.name !== 'AbortError') {
-        copyToClipboard(shareText);
+        // For clipboard, include URL in text
+        copyToClipboard(`${shareText} sortpanic.com/play`);
       }
     }
   } else {
-    // No native share, use clipboard
-    copyToClipboard(shareText);
+    // No native share, use clipboard with URL
+    copyToClipboard(`${shareText} sortpanic.com/play`);
   }
 }
 

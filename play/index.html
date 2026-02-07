@@ -404,24 +404,202 @@ body::before {
   margin-bottom: 24px;
 }
 
-#gameOver .unlock-notice {
-  background: linear-gradient(135deg, var(--mint), var(--peach));
-  color: white;
-  padding: 16px 24px;
-  border-radius: 16px;
+#progressNotice {
+  font-size: 16px;
+  color: #999;
   margin-bottom: 20px;
-  font-weight: 600;
-  animation: slideDown 0.4s ease-out;
+  padding: 12px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 12px;
 }
 
-@keyframes slideDown {
+/* ---------- LEVEL COMPLETE SCREEN ---------- */
+#levelComplete {
+  background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 50%, var(--peach) 100%);
+  padding: 40px 20px;
+}
+
+.celebration-screen {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+#levelComplete h2 {
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  animation: fadeInScale 0.5s ease-out;
+}
+
+.complete-score {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.score-label {
+  font-size: 0.9rem;
+  color: #999;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.score-value {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--purple);
+  margin-bottom: 10px;
+}
+
+.target-met {
+  font-size: 1.1rem;
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.unlock-banner {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.unlock-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--pink);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.unlock-level-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.unlock-level-desc {
+  font-size: 1rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* ---------- HIGH SCORE SCREEN ---------- */
+#highScore {
+  padding: 40px 20px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+}
+
+.highscore-screen {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+#highScore h2 {
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  animation: fadeInScale 0.5s ease-out;
+}
+
+.score-comparison {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.new-score {
+  margin-bottom: 20px;
+}
+
+#newHighScore {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #FFD700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.previous-score {
+  padding-top: 15px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.score-label-small {
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.score-value-small {
+  font-size: 1.5rem;
+  color: #999;
+  font-weight: 600;
+}
+
+#highScoreStats {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  font-size: 0.95rem;
+  color: #666;
+  text-align: center;
+}
+
+/* ---------- BUTTON STYLES ---------- */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+button.primary {
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+}
+
+button.large {
+  font-size: 1.3rem;
+  padding: 20px 50px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 6px 20px rgba(230, 204, 255, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(230, 204, 255, 0.5);
+  }
+}
+
+@keyframes fadeInScale {
   from {
-    transform: translateY(-20px);
     opacity: 0;
+    transform: scale(0.9);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -451,7 +629,7 @@ button.secondary {
 }
 
 /* Share button special styling */
-#shareBtn {
+#shareBtn, #shareBtnComplete, #shareBtnHigh {
   background: linear-gradient(135deg, var(--mint), var(--blue));
   display: flex;
   align-items: center;
@@ -1123,15 +1301,63 @@ button.secondary {
   </div>
 </div>
 
+<!-- LEVEL COMPLETE + UNLOCK -->
+<div id="levelComplete" class="screen hidden">
+  <div class="celebration-screen">
+    <h2>🎉 LEVEL COMPLETE! 🎉</h2>
+    <div class="complete-score">
+      <div class="score-label">Your Score</div>
+      <div class="score-value" id="completeScore">0</div>
+      <div class="target-met" id="targetMet">Target: 60 ✅</div>
+    </div>
+    <div class="unlock-banner">
+      <div class="unlock-text">LEVEL UNLOCKED!</div>
+      <div class="unlock-level" id="unlockedLevelInfo">
+        <div class="unlock-level-name" id="unlockedLevelName">Level 2: Swap</div>
+        <div class="unlock-level-desc" id="unlockedLevelDesc">Controls betray you</div>
+      </div>
+    </div>
+    <div class="button-group">
+      <button id="shareBtnComplete" onclick="shareScore()">📤 Share Score</button>
+      <button class="primary large" id="playNextBtn" onclick="playNextLevel()">▶ PLAY NEXT LEVEL</button>
+      <button onclick="retry()">↺ Retry This Level</button>
+      <button class="secondary" onclick="showLevelSelect()">← Level Select</button>
+    </div>
+  </div>
+</div>
+
+<!-- HIGH SCORE -->
+<div id="highScore" class="screen hidden">
+  <div class="highscore-screen">
+    <h2>🏆 NEW HIGH SCORE! 🏆</h2>
+    <div class="score-comparison">
+      <div class="new-score">
+        <div class="score-label">New Score</div>
+        <div class="score-value" id="newHighScore">0</div>
+      </div>
+      <div class="previous-score">
+        <div class="score-label-small">Previous Best</div>
+        <div class="score-value-small" id="previousScore">0</div>
+      </div>
+    </div>
+    <div class="stats" id="highScoreStats"></div>
+    <div class="button-group">
+      <button id="shareBtnHigh" onclick="shareScore()">📤 Share Score</button>
+      <button class="primary large" onclick="retry()">↺ Play Again</button>
+      <button class="secondary" onclick="showLevelSelect()">← Level Select</button>
+    </div>
+  </div>
+</div>
+
 <!-- GAME OVER -->
 <div id="gameOver" class="screen hidden">
   <h2>Game Over</h2>
   <div class="final-score" id="finalScore">0</div>
   <div class="stats" id="stats"></div>
-  <div id="unlockNotice"></div>
+  <div id="progressNotice"></div>
   <button id="shareBtn" onclick="shareScore()">📤 Share Score</button>
-  <button onclick="retry()">Retry</button>
-  <button class="secondary" onclick="showLevelSelect()">Back to Levels</button>
+  <button class="primary" onclick="retry()">↺ Try Again</button>
+  <button class="secondary" onclick="showLevelSelect()">← Level Select</button>
 </div>
 
 <!-- Install Prompt -->
@@ -1423,6 +1649,8 @@ function showLevelSelect() {
   document.getElementById("titleScreen").classList.add("hidden");
   document.getElementById("game").classList.add("hidden");
   document.getElementById("gameOver").classList.add("hidden");
+  document.getElementById("levelComplete").classList.add("hidden");
+  document.getElementById("highScore").classList.add("hidden");
 
   const ls = document.getElementById("levelSelect");
   ls.innerHTML = "";
@@ -1896,6 +2124,10 @@ function endGame() {
     document.getElementById("game").classList.remove("shake");
   }, 300);
 
+  // Save previous best before updating
+  const previousBest = bestScores[currentLevel] || 0;
+  const isNewHighScore = score > previousBest;
+
   // Update best score
   if (!bestScores[currentLevel] || score > bestScores[currentLevel]) {
     bestScores[currentLevel] = score;
@@ -1903,16 +2135,17 @@ function endGame() {
   }
 
   // Check for unlock (only for regular levels, not challenge)
-  let unlockMessage = "";
+  let justUnlockedLevel = false;
+  let nextLevelNum = 0;
   if (currentLevel !== 'challenge') {
     const currentLevelData = levels[currentLevel - 1];
     
     if (currentLevelData && currentLevelData.unlock && score >= currentLevelData.unlock) {
-      const nextLevel = currentLevel + 1;
-      if (!unlocked[nextLevel] && nextLevel <= levels.length) {
-        unlocked[nextLevel] = true;
+      nextLevelNum = currentLevel + 1;
+      if (!unlocked[nextLevelNum] && nextLevelNum <= levels.length) {
+        unlocked[nextLevelNum] = true;
         localStorage.setItem("unlocked", JSON.stringify(unlocked));
-        unlockMessage = `🎉 Level ${nextLevel} Unlocked!`;
+        justUnlockedLevel = true;
       }
     }
   }
@@ -1926,41 +2159,119 @@ function endGame() {
     setTimeout(() => badge.remove(), 1500);
   }
 
-  // Display stats
+  // Hide game screen
+  document.getElementById("game").classList.add("hidden");
+  
+  // DECIDE WHICH SCREEN TO SHOW
+  
+  // SCREEN 1: Level Complete + Unlock
+  if (justUnlockedLevel) {
+    showLevelCompleteScreen(nextLevelNum);
+  }
+  // SCREEN 2: High Score (beat previous best, but no unlock)
+  else if (isNewHighScore) {
+    showHighScoreScreen(previousBest);
+  }
+  // SCREEN 3: Game Over (didn't beat previous best)
+  else {
+    showGameOverScreen();
+  }
+}
+
+function showLevelCompleteScreen(nextLevel) {
+  // Hide other screens
+  document.getElementById("gameOver").classList.add("hidden");
+  document.getElementById("highScore").classList.add("hidden");
+  
+  // Populate data
+  document.getElementById("completeScore").textContent = score;
+  
+  const currentLevelData = levels[currentLevel - 1];
+  document.getElementById("targetMet").textContent = `Target: ${currentLevelData.unlock} ✅`;
+  
+  const nextLevelData = levels[nextLevel - 1];
+  document.getElementById("unlockedLevelName").textContent = `Level ${nextLevel}: ${nextLevelData.name}`;
+  document.getElementById("unlockedLevelDesc").textContent = nextLevelData.description;
+  
+  // Update button text
+  document.getElementById("playNextBtn").textContent = `▶ PLAY LEVEL ${nextLevel}`;
+  document.getElementById("playNextBtn").onclick = () => startLevel(nextLevel);
+  
+  // Show screen
+  document.getElementById("levelComplete").classList.remove("hidden");
+}
+
+function showHighScoreScreen(previousBest) {
+  // Hide other screens
+  document.getElementById("gameOver").classList.add("hidden");
+  document.getElementById("levelComplete").classList.add("hidden");
+  
+  // Populate data
+  document.getElementById("newHighScore").textContent = score;
+  document.getElementById("previousScore").textContent = previousBest;
+  
+  // Stats
   let stats = "";
   if (perfect && score >= 10) {
-    stats = "Perfect Run!";
+    stats += "✨ Perfect Run! ";
+  }
+  if (maxCombo > 5) {
+    stats += `🔥 Max Combo: ${maxCombo}x`;
+  }
+  document.getElementById("highScoreStats").textContent = stats || `Great job! +${score - previousBest} points!`;
+  
+  // Show screen
+  document.getElementById("highScore").classList.remove("hidden");
+}
+
+function showGameOverScreen() {
+  // Hide other screens
+  document.getElementById("levelComplete").classList.add("hidden");
+  document.getElementById("highScore").classList.add("hidden");
+  
+  // Populate data
+  document.getElementById("finalScore").textContent = score;
+  
+  // Stats
+  let stats = "";
+  if (perfect && score >= 10) {
+    stats = "✨ Perfect Run!";
+  } else if (maxCombo > 5) {
+    stats = `🔥 Max Combo: ${maxCombo}x`;
   }
   document.getElementById("stats").textContent = stats;
-
-  // Show unlock notice with auto-start
-  const unlockNotice = document.getElementById("unlockNotice");
-  if (unlockMessage) {
+  
+  // Progress notice (how close to unlocking next level)
+  const progressNotice = document.getElementById("progressNotice");
+  if (currentLevel !== 'challenge') {
+    const currentLevelData = levels[currentLevel - 1];
     const nextLevel = currentLevel + 1;
-    let countdown = 3;
-    unlockNotice.className = "unlock-notice";
-    unlockNotice.textContent = `${unlockMessage} Starting in ${countdown}...`;
     
-    const countdownInterval = setInterval(() => {
-      countdown--;
-      if (countdown > 0) {
-        unlockNotice.textContent = `${unlockMessage} Starting in ${countdown}...`;
+    if (currentLevelData && currentLevelData.unlock && !unlocked[nextLevel] && nextLevel <= levels.length) {
+      const needed = currentLevelData.unlock - score;
+      if (needed > 0) {
+        progressNotice.textContent = `Need ${needed} more points to unlock Level ${nextLevel}`;
       } else {
-        clearInterval(countdownInterval);
-        // Auto-start the newly unlocked level
-        document.getElementById("gameOver").classList.add("hidden");
-        startLevel(nextLevel);
+        progressNotice.textContent = "";
       }
-    }, 1000);
+    } else {
+      progressNotice.textContent = "";
+    }
   } else {
-    unlockNotice.className = "";
-    unlockNotice.textContent = "";
+    progressNotice.textContent = "";
   }
-
-  // Show game over
-  document.getElementById("finalScore").textContent = score;
-  document.getElementById("game").classList.add("hidden");
+  
+  // Show screen
   document.getElementById("gameOver").classList.remove("hidden");
+}
+
+function playNextLevel() {
+  // This function is set dynamically in showLevelCompleteScreen
+  // But including a default handler just in case
+  const nextLevel = currentLevel + 1;
+  if (nextLevel <= levels.length) {
+    startLevel(nextLevel);
+  }
 }
 
 function retry() {
@@ -1969,25 +2280,43 @@ function retry() {
 
 /* ---------- SHARE ---------- */
 async function shareScore() {
-  const highScore = bestScores[currentLevel] || score;
-  const text = `I panicked at ${highScore} 😭 Can you beat me? sortpanic.com`;
+  // Use the actual score from this game, not best score
+  const shareText = `I panicked at ${score} 😭 Can you beat me? sortpanic.com/play`;
   
   if (navigator.share) {
     try {
       await navigator.share({
         title: 'Sort Panic',
-        text: text
+        text: shareText,
+        url: 'https://sortpanic.com/play'
       });
     } catch (err) {
-      // User cancelled or share failed
-      copyToClipboard(text);
+      // User cancelled or share failed, try clipboard
+      if (err.name !== 'AbortError') {
+        copyToClipboard(shareText);
+      }
     }
   } else {
-    copyToClipboard(text);
+    // No native share, use clipboard
+    copyToClipboard(shareText);
   }
 }
 
 function copyToClipboard(text) {
+  // Try modern Clipboard API first
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Score copied to clipboard! 📋\nPaste it to share with friends!');
+    }).catch(() => {
+      // Fallback to old method
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
   const textarea = document.createElement('textarea');
   textarea.value = text;
   textarea.style.position = 'fixed';
@@ -1997,9 +2326,9 @@ function copyToClipboard(text) {
   
   try {
     document.execCommand('copy');
-    alert('Score copied to clipboard!');
+    alert('Score copied to clipboard! 📋\nPaste it to share with friends!');
   } catch (err) {
-    alert('Could not copy score');
+    alert('Could not copy score. Your score: ' + text);
   }
   
   document.body.removeChild(textarea);

@@ -2198,15 +2198,16 @@ function showHighScoreScreen(previousBest) {
   document.getElementById("newHighScore").textContent = score;
   document.getElementById("previousScore").textContent = previousBest;
   
-  // Stats
+  // Stats - simple and clean
   let stats = "";
   if (perfect && score >= 10) {
-    stats += "✨ Perfect Run! ";
+    stats = "✨ Perfect Run!";
+  } else {
+    const improvement = score - previousBest;
+    stats = `${improvement} points better!`;
   }
-  if (maxCombo > 5) {
-    stats += `🔥 Max Combo: ${maxCombo}x`;
-  }
-  document.getElementById("highScoreStats").textContent = stats || `Great job! +${score - previousBest} points!`;
+  
+  document.getElementById("highScoreStats").textContent = stats;
   
   // Show screen
   document.getElementById("highScore").classList.remove("hidden");
@@ -2220,12 +2221,10 @@ function showGameOverScreen() {
   // Populate data
   document.getElementById("finalScore").textContent = score;
   
-  // Stats
+  // Stats - just show perfect run if applicable
   let stats = "";
   if (perfect && score >= 10) {
     stats = "✨ Perfect Run!";
-  } else if (maxCombo > 5) {
-    stats = `🔥 Max Combo: ${maxCombo}x`;
   }
   document.getElementById("stats").textContent = stats;
   

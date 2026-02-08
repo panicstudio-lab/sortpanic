@@ -1803,9 +1803,14 @@ function beginLevel(lvl) {
     console.log(`Level ${lvl}: Swap will happen at score ${swapScore}`);
   }
 
+  // Hide all screens
   document.getElementById("titleScreen").classList.add("hidden");
   document.getElementById("levelSelect").classList.add("hidden");
   document.getElementById("gameOver").classList.add("hidden");
+  document.getElementById("levelComplete").classList.add("hidden");
+  document.getElementById("highScore").classList.add("hidden");
+  
+  // Show game
   document.getElementById("game").classList.remove("hidden");
   document.getElementById("scoreDisplay").textContent = "0";
   document.getElementById("area").innerHTML = "";
@@ -2175,8 +2180,9 @@ function showLevelCompleteScreen(nextLevel) {
   document.getElementById("unlockedLevelName").textContent = `Level ${nextLevel}: ${nextLevelData.name}`;
   document.getElementById("unlockedLevelDesc").textContent = nextLevelData.description;
   
-  // Update button text
+  // Update button text and handler
   document.getElementById("playNextBtn").textContent = `▶ PLAY LEVEL ${nextLevel}`;
+  // Show intro for newly unlocked level (first time playing it)
   document.getElementById("playNextBtn").onclick = () => startLevel(nextLevel);
   
   // Show screen
@@ -2257,7 +2263,8 @@ function playNextLevel() {
 }
 
 function retry() {
-  startLevel(currentLevel);
+  // Skip intro animation when retrying - go straight to game
+  beginLevel(currentLevel);
 }
 
 /* ---------- SHARE ---------- */

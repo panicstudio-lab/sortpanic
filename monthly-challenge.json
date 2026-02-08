@@ -2,8 +2,8 @@
   "month": "2026-02",
   "challenge_name": "Speed Demon",
   "target_score": 50,
-  "ball_speed_multiplier": 1.5,
-  "time_limit": 60,
+  "ball_speed_multiplier": 2.0,
+  "time_limit": 80,
   "theme_color": null,
   "description": "Sort faster than ever!"
 }

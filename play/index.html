@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LQ5NKJP9DS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LQ5NKJP9DS');
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2270,37 +2279,24 @@ function retry() {
 async function shareScore() {
   // Use the actual score from this game, not best score
   const shareText = `I panicked at ${score} 😭 Can you beat me?`;
-  const shareUrl = 'https://sortpanic.com/play';
-  const fullShareText = `${shareText} ${shareUrl}`;
   
-  // Try Web Share API first (works in browsers, may not work in WebView)
   if (navigator.share) {
     try {
       await navigator.share({
         title: 'Sort Panic',
         text: shareText,
-        url: shareUrl
+        url: 'https://sortpanic.com/play'
       });
-      return; // Successfully shared
     } catch (err) {
-      if (err.name === 'AbortError') {
-        return; // User cancelled
+      // User cancelled or share failed, try clipboard
+      if (err.name !== 'AbortError') {
+        copyToClipboard(`${shareText} https://sortpanic.com/play`);
       }
-      // Share failed, continue to fallbacks
     }
+  } else {
+    // No native share, use clipboard
+    copyToClipboard(`${shareText} https://sortpanic.com/play`);
   }
-  
-  // Try Android Intent (works in WebView/APK)
-  try {
-    const intentUrl = `intent://send#Intent;scheme=android.intent.action;action=SEND;type=text/plain;S.android.intent.extra.TEXT=${encodeURIComponent(fullShareText)};end`;
-    window.location.href = intentUrl;
-    return;
-  } catch (err) {
-    // Intent failed, continue
-  }
-  
-  // Final fallback: clipboard
-  copyToClipboard(fullShareText);
 }
 
 function copyToClipboard(text) {

@@ -1870,7 +1870,10 @@ function spawn(isGraceBall = false) {
   let baseSpeed = 180;
   let speedIncrease = 12;
   
-  if (currentLevel === 4) {
+  if (currentLevel === 3) {
+    baseSpeed = 160; // Slower for Fake Out (color changes need reaction time)
+    speedIncrease = 10;
+  } else if (currentLevel === 4) {
     baseSpeed = 220; // Faster for precision
     speedIncrease = 15;
   } else if (currentLevel === 5) {
@@ -1901,10 +1904,10 @@ function spawn(isGraceBall = false) {
     : 0.4;
   
   if (shouldColorChange && Math.random() < colorChangeChance) {
-    // Micro-pause duration: configurable for challenge mode
+    // Micro-pause duration: longer for Level 3, configurable for challenge mode
     const pauseDuration = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_pause_ms)
       ? monthlyChallenge.color_change_pause_ms
-      : 85;
+      : (currentLevel === 3 ? 110 : 85); // Longer pause for Level 3 to give reaction time
       
     colorChangeTimeout = setTimeout(() => {
       if (current && active) {

@@ -1872,7 +1872,7 @@ function spawn(isGraceBall = false) {
   
   if (currentLevel === 3) {
     baseSpeed = 160; // Slower for Fake Out (color changes need reaction time)
-    speedIncrease = 10;
+    speedIncrease = 6; // Gentler acceleration to keep it playable with color changes
   } else if (currentLevel === 4) {
     baseSpeed = 220; // Faster for precision
     speedIncrease = 15;
@@ -1895,14 +1895,6 @@ function spawn(isGraceBall = false) {
     speed = speed * graceMultiplier;
   }
 
-  // Color change logic (Level 3, Level 5, or Challenge mode)
-  const shouldColorChange = (currentLevel === 3 || currentLevel === 5) ||
-    (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_chance > 0);
-  
-  const colorChangeChance = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_chance)
-    ? monthlyChallenge.color_change_chance
-    : 0.4;
-  
   // Color change logic (Level 3, Level 5, or Challenge mode)
   const shouldColorChange = (currentLevel === 3 || currentLevel === 5) ||
     (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_chance > 0);

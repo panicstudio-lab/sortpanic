@@ -1,0 +1,21 @@
+{
+  "name": "Sort Panic",
+  "short_name": "Sort Panic",
+  "description": "Don't Think. Just Sort. The addictive sorting game.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#667eea",
+  "background_color": "#F5E6FF",
+  "display": "standalone",
+  "start_url": "/"
+}

@@ -1908,27 +1908,36 @@ function spawn(isGraceBall = false) {
     const pauseDuration = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_pause_ms)
       ? monthlyChallenge.color_change_pause_ms
       : (currentLevel === 3 ? 110 : 85); // Longer pause for Level 3 to give reaction time
+    
+    // Calculate when to change color (randomly in top 40% of screen)
+    const screenHeight = window.innerHeight;
+    const changeAtY = Math.random() * (screenHeight * 0.4); // Random point in top 40%
+    const timeToChange = (changeAtY / speed) * 1000; // Calculate time to reach that point
       
     colorChangeTimeout = setTimeout(() => {
       if (current && active) {
-        // Micro-pause: freeze the ball
-        const savedSpeed = speed;
-        speed = 0; // Freeze
-        
-        // Change color
-        const newColor = current.dataset.color === "blue" ? "pink" : "blue";
-        current.dataset.color = newColor;
-        current.style.background = newColor === "blue" ? "var(--blue)" : "var(--pink)";
-        current.style.transition = "background 0.3s";
-        
-        // Resume after pause
-        setTimeout(() => {
-          if (current && active) {
-            speed = savedSpeed;
-          }
-        }, pauseDuration);
+        // Only change if ball is still in top 40% (safety check)
+        const currentY = parseFloat(current.style.top);
+        if (currentY < screenHeight * 0.4) {
+          // Micro-pause: freeze the ball
+          const savedSpeed = speed;
+          speed = 0; // Freeze
+          
+          // Change color
+          const newColor = current.dataset.color === "blue" ? "pink" : "blue";
+          current.dataset.color = newColor;
+          current.style.background = newColor === "blue" ? "var(--blue)" : "var(--pink)";
+          current.style.transition = "background 0.3s";
+          
+          // Resume after pause
+          setTimeout(() => {
+            if (current && active) {
+              speed = savedSpeed;
+            }
+          }, pauseDuration);
+        }
       }
-    }, Math.random() * 800 + 400);
+    }, timeToChange);
   }
   
   // Restart the animation loop

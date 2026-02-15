@@ -288,7 +288,11 @@ h1 {
     <h2>Download Latest Build</h2>
     <p style="color: #718096; margin-bottom: 20px;">Test new features before they go live</p>
     
-    <a href="/downloads/sort-panic-v1.0.apk" class="download-btn" download>
+    <a href="/downloads/sort-panic-v1.0.apk" class="download-btn" download onclick="gtag('event', 'apk_download', {
+      'event_category': 'downloads',
+      'event_label': 'sort-panic-v1.0.apk',
+      'value': 1
+    });">
       📥 Download APK
       <span class="version-info">v1.0</span>
     </a>

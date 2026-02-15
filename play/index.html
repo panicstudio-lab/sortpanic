@@ -1903,25 +1903,33 @@ function spawn(isGraceBall = false) {
     ? monthlyChallenge.color_change_chance
     : 0.4;
   
+  // Color change logic (Level 3, Level 5, or Challenge mode)
+  const shouldColorChange = (currentLevel === 3 || currentLevel === 5) ||
+    (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_chance > 0);
+  
+  const colorChangeChance = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_chance)
+    ? monthlyChallenge.color_change_chance
+    : 0.4;
+  
   if (shouldColorChange && Math.random() < colorChangeChance) {
     // Micro-pause duration: longer for Level 3, configurable for challenge mode
     const pauseDuration = (currentLevel === 'challenge' && monthlyChallenge && monthlyChallenge.color_change_pause_ms)
       ? monthlyChallenge.color_change_pause_ms
       : (currentLevel === 3 ? 110 : 85); // Longer pause for Level 3 to give reaction time
     
-    // Calculate when to change color (randomly in top 40% of screen)
-    const screenHeight = window.innerHeight;
-    const changeAtY = Math.random() * (screenHeight * 0.4); // Random point in top 40%
-    const timeToChange = (changeAtY / speed) * 1000; // Calculate time to reach that point
+    // Change color early (random time between 200-800ms, ensuring it happens in top 40%)
+    const timeToChange = Math.random() * 600 + 200; // 200-800ms
       
     colorChangeTimeout = setTimeout(() => {
       if (current && active) {
-        // Only change if ball is still in top 40% (safety check)
+        // Double-check ball is still in top 40%
         const currentY = parseFloat(current.style.top);
+        const screenHeight = window.innerHeight;
+        
         if (currentY < screenHeight * 0.4) {
           // Micro-pause: freeze the ball
           const savedSpeed = speed;
-          speed = 0; // Freeze
+          speed = 0; // Freeze movement
           
           // Change color
           const newColor = current.dataset.color === "blue" ? "pink" : "blue";
@@ -1932,7 +1940,7 @@ function spawn(isGraceBall = false) {
           // Resume after pause
           setTimeout(() => {
             if (current && active) {
-              speed = savedSpeed;
+              speed = savedSpeed; // Restore speed
             }
           }, pauseDuration);
         }

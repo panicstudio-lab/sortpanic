@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LQ5NKJP9DS"></script>
+<!-- Google Analytics - only loaded on production -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-LQ5NKJP9DS');
+  // Only load GA on production domains
+  const ANALYTICS_ENABLED = 
+    location.hostname === "sortpanic.com" || 
+    location.hostname === "www.sortpanic.com" ||
+    location.hostname.endsWith(".sortpanic.com");
+  
+  window.ANALYTICS_ENABLED = ANALYTICS_ENABLED;
+  
+  if (ANALYTICS_ENABLED) {
+    // Inject GA script
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-LQ5NKJP9DS';
+    document.head.appendChild(script);
+    
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LQ5NKJP9DS');
+  }
 </script>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -45,10 +60,17 @@
   --text-light: rgba(74, 74, 94, 0.65);
 }
 
+html, body {
+  height: 100%;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: var(--bg);
-  height: 100vh;
+  height: 100dvh;
+  min-height: 100dvh;
   overflow: hidden;
   position: relative;
 }
@@ -90,7 +112,7 @@ body::before {
   padding: 20px;
   padding-top: 40px;
   overflow-y: auto;
-  max-height: 100vh;
+  max-height: 100dvh;
   justify-content: flex-start !important; /* Override .screen centering */
 }
 
@@ -123,11 +145,11 @@ body::before {
   transition: width 0.3s;
 }
 
-.level-tile:nth-child(1)::before { background: var(--blue); }
-.level-tile:nth-child(2)::before { background: var(--pink); }
-.level-tile:nth-child(3)::before { background: var(--purple); }
-.level-tile:nth-child(4)::before { background: var(--mint); }
-.level-tile:nth-child(5)::before { background: var(--peach); }
+.level-tile[data-level="1"]::before { background: var(--blue); }
+.level-tile[data-level="2"]::before { background: var(--pink); }
+.level-tile[data-level="3"]::before { background: var(--purple); }
+.level-tile[data-level="4"]::before { background: var(--mint); }
+.level-tile[data-level="5"]::before { background: var(--peach); }
 
 .level-tile:not(.locked):hover::before {
   width: 12px;
@@ -191,6 +213,73 @@ body::before {
   font-weight: 600;
 }
 
+/* ---------- SWAP EFFECTS ---------- */
+.swap-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  pointer-events: none;
+  animation: swapOverlayPop 0.7s ease-out forwards;
+}
+
+.swap-overlay-text {
+  font-size: 72px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(230, 204, 255, 0.8));
+}
+
+@keyframes swapOverlayPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+.controls-dim {
+  opacity: 0.6 !important;
+  transition: opacity 0.2s;
+}
+
+.controls-pulse {
+  animation: controlsPulse 0.4s ease-out;
+}
+
+@keyframes controlsPulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.03);
+    filter: brightness(1.3) drop-shadow(0 0 30px rgba(230, 204, 255, 0.8));
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
 /* ---------- GAME ---------- */
 #game {
   position: absolute;
@@ -215,7 +304,8 @@ body::before {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 200px;
+  bottom: calc(200px + env(safe-area-inset-bottom));
+  touch-action: none;
 }
 
 .object {
@@ -227,12 +317,6 @@ body::before {
   transform: translateX(-50%);
   box-shadow: 0 10px 30px rgba(0,0,0,.15);
   transition: none;
-}
-
-/* Level 4: Precision - smaller objects */
-.object.small {
-  width: 50px;
-  height: 50px;
 }
 
 .object.explode {
@@ -289,6 +373,8 @@ body::before {
   width: 100%;
   height: 200px;
   z-index: 15;
+  padding-bottom: env(safe-area-inset-bottom);
+  touch-action: none;
 }
 
 .zone {
@@ -346,15 +432,6 @@ body::before {
   position: relative;
   z-index: 1;
   text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-
-/* Level 4: Precision - smaller zones */
-.zone.swapped-left {
-  transform: translateX(100%);
-}
-
-.zone.swapped-right {
-  transform: translateX(-100%);
 }
 
 .zone.narrow {
@@ -679,6 +756,30 @@ button.secondary {
   animation: slideUp 0.4s ease-out;
 }
 
+/* Toast notifications */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 16px 24px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  z-index: 1001;
+  max-width: 90%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  animation: slideUp 0.4s ease-out;
+  pointer-events: none;
+}
+
+@keyframes toastFadeOut {
+  from { opacity: 1; transform: translateX(-50%) scale(1); }
+  to { opacity: 0; transform: translateX(-50%) scale(0.95); }
+}
+
 @keyframes slideUp {
   from {
     transform: translate(-50%, 100px);
@@ -697,6 +798,16 @@ button.secondary {
 }
 
 /* ---------- LEVEL INTRO ANIMATIONS ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.98); }
+}
+
 .level-intro {
   position: fixed;
   inset: 0;
@@ -747,9 +858,11 @@ button.secondary {
   padding: 12px 20px;
   border-radius: 8px;
   background: transparent;
+  border: none;
   transition: background 0.2s;
   text-align: center;
   margin-top: 10px;
+  font-family: inherit;
 }
 
 .intro-back-btn:active {
@@ -761,12 +874,13 @@ button.secondary {
   font-weight: 700;
   color: var(--dark);
   text-align: center;
-  margin-bottom: 20px;
+  margin: 0 0 10px 0;
 }
 
-/* Level 1 intro title sits a bit too high because the demo is tall */
-.level-intro.level-1 .intro-title {
-  margin-top: 18px;
+/* Level 1 intro uses flex-start to feel more intentional */
+.level-intro.level-1 {
+  justify-content: flex-start;
+  padding-top: calc(70px + env(safe-area-inset-top));
 }
 
 .intro-demo {
@@ -970,16 +1084,17 @@ button.secondary {
   justify-content: center;
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
   position: relative;
-  animation: swapBars 3s ease-in-out infinite;
+  animation: none;
 }
 
 .blue-bar {
   background: var(--blue);
+  animation: swapBars 3s ease-in-out infinite;
 }
 
 .pink-bar {
   background: var(--pink);
-  animation-delay: 0s;
+  animation: swapBarsReverse 3s ease-in-out infinite;
 }
 
 .swap-bar .arrow {
@@ -990,14 +1105,14 @@ button.secondary {
 }
 
 @keyframes swapBars {
-  0%, 40% {
+  0%, 35% {
     transform: translateX(0);
   }
-  50%, 90% {
+  50%, 65% {
     transform: translateX(calc(100% + 20px));
   }
-  100% {
-    transform: translateX(calc(100% + 20px));
+  80%, 100% {
+    transform: translateX(0);
   }
 }
 
@@ -1006,14 +1121,14 @@ button.secondary {
 }
 
 @keyframes swapBarsReverse {
-  0%, 40% {
+  0%, 35% {
     transform: translateX(0);
   }
-  50%, 90% {
+  50%, 65% {
     transform: translateX(calc(-100% - 20px));
   }
-  100% {
-    transform: translateX(calc(-100% - 20px));
+  80%, 100% {
+    transform: translateX(0);
   }
 }
 
@@ -1324,6 +1439,14 @@ button.secondary {
     opacity: 0;
   }
 }
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 </style>
 </head>
 
@@ -1415,8 +1538,25 @@ button.secondary {
 </div>
 
 <script>
+/* ---------- ANALYTICS ---------- */
+function track(eventName, params = {}) {
+  if (!window.ANALYTICS_ENABLED) return;
+  try {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, params);
+    }
+  } catch (e) {
+    // Silently fail if GA not loaded
+  }
+}
+
 /* ---------- AUDIO ---------- */
 let audioCtx;
+
+async function ensureAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === "suspended") await audioCtx.resume();
+}
 
 function playBeep(freq, dur, vol=0.2) {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1452,14 +1592,18 @@ function playSwapSound() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const o = audioCtx.createOscillator();
   const g = audioCtx.createGain();
-  o.frequency.setValueAtTime(600, audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.25);
-  g.gain.setValueAtTime(0.15, audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+  
+  // Dramatic whoosh: start high, sweep low, longer decay
+  o.frequency.setValueAtTime(800, audioCtx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.5);
+  
+  g.gain.setValueAtTime(0.25, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+  
   o.connect(g);
   g.connect(audioCtx.destination);
   o.start();
-  o.stop(audioCtx.currentTime + 0.25);
+  o.stop(audioCtx.currentTime + 0.5);
 }
 
 function playComboSound(multiplier) {
@@ -1567,7 +1711,7 @@ function showLevelIntro(levelId, callback) {
   
   content += `
     <div class="start-prompt" onclick="startIntro()">TAP TO START</div>
-    <div class="intro-back-btn" onclick="closeIntro()">← Back to Levels</div>
+    <button class="intro-back-btn" onclick="closeIntro()">← Back to Levels</button>
   `;
   
   intro.innerHTML = content;
@@ -1630,6 +1774,10 @@ function closeIntro() {
   // Show Home button again
   const homeBtn = document.getElementById('homeButton');
   if (homeBtn) homeBtn.style.display = 'block';
+  // Clear state
+  window.currentIntro = null;
+  window.introCallback = null;
+  window.currentLevelIntro = null;
   // Return to level select
   document.getElementById("levelSelect").classList.remove("hidden");
 }
@@ -1667,7 +1815,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
   
   // Show install prompt after 5 seconds if not installed
   setTimeout(() => {
-    if (!window.matchMedia('(display-mode: standalone)').matches) {
+    if (canShowInstallNudge()) {
       document.getElementById('installPrompt').classList.add('show');
     }
   }, 5000);
@@ -1684,6 +1832,7 @@ function installApp() {
 }
 
 function dismissInstall() {
+  localStorage.setItem("installNudgeDismissed", Date.now());
   document.getElementById('installPrompt').classList.remove('show');
 }
 
@@ -1692,7 +1841,16 @@ async function loadMonthlyChallenge() {
   const CHALLENGE_URL = 'https://sortpanic.com/monthly-challenge.json';
   
   try {
-    const response = await fetch(CHALLENGE_URL);
+    // Add timeout and no-cache to ensure fresh data
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+    
+    const response = await fetch(CHALLENGE_URL + '?v=' + Date.now(), {
+      cache: "no-store",
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    
     const challenge = await response.json();
     
     // Cache it locally
@@ -1700,7 +1858,12 @@ async function loadMonthlyChallenge() {
     localStorage.setItem('challenge-last-updated', Date.now());
     
     monthlyChallenge = challenge;
+    
+    // If level select is currently visible, re-render it
+    const ls = document.getElementById("levelSelect");
+    if (ls && !ls.classList.contains("hidden")) showLevelSelect();
   } catch (error) {
+    console.warn("Challenge load failed", error);
     // Use cached version if offline
     const cached = localStorage.getItem('monthly-challenge');
     if (cached) {
@@ -1712,8 +1875,13 @@ async function loadMonthlyChallenge() {
 function getDaysRemaining(monthString) {
   // monthString format: "2026-02"
   const [year, month] = monthString.split('-').map(Number);
-  const lastDay = new Date(year, month, 0); // Last day of the month
-  const today = new Date();
+  // Use UTC for both dates to avoid timezone issues
+  const lastDay = new Date(Date.UTC(year, month, 0, 23, 59, 59)); // Last second of month
+  const today = new Date(Date.UTC(
+    new Date().getUTCFullYear(),
+    new Date().getUTCMonth(),
+    new Date().getUTCDate()
+  ));
   const diffTime = lastDay - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return Math.max(0, diffDays);
@@ -1727,6 +1895,10 @@ function showLevelSelect() {
   document.getElementById("gameOver").classList.add("hidden");
   document.getElementById("levelComplete").classList.add("hidden");
   document.getElementById("highScore").classList.add("hidden");
+  
+  // Show Home button in level select
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'block';
 
   const ls = document.getElementById("levelSelect");
   ls.innerHTML = "";
@@ -1737,6 +1909,7 @@ function showLevelSelect() {
     const tile = document.createElement("div");
     const isUnlocked = unlocked[l.id];
     tile.className = "level-tile" + (isUnlocked ? "" : " locked");
+    tile.setAttribute('data-level', l.id);
     
     let content = `<div>LEVEL ${l.id}: ${l.name}<br><span>${l.description}</span>`;
     
@@ -1770,15 +1943,15 @@ function showLevelSelect() {
   });
   
   // Add monthly challenge tile at the bottom
-  if (monthlyChallenge) {
+  if (monthlyChallenge && monthlyChallenge.month) {
     const challengeTile = document.createElement("div");
     challengeTile.className = "level-tile challenge-tile";
     challengeTile.style.marginTop = "20px"; // Extra space above challenge
     const daysLeft = getDaysRemaining(monthlyChallenge.month);
     
-    let content = `<div>🏆 ${monthlyChallenge.challenge_name.toUpperCase()}<br><span>${monthlyChallenge.description}</span>`;
+    let content = `<div>🏆 ${(monthlyChallenge.challenge_name || 'Monthly Challenge').toUpperCase()}<br><span>${monthlyChallenge.description || 'Special monthly challenge'}</span>`;
     content += `<div class="challenge-timer">⏰ ${daysLeft} days left</div>`;
-    content += `<div class="challenge-target">🎯 Target: ${monthlyChallenge.target_score}</div>`;
+    content += `<div class="challenge-target">🎯 Target: ${monthlyChallenge.target_score || 100}</div>`;
     content += `</div><div>▶</div>`;
     
     challengeTile.innerHTML = content;
@@ -1798,7 +1971,7 @@ function showLevelSelect() {
 function resetIntros() {
   seenIntros = {};
   localStorage.setItem('seenIntros', JSON.stringify(seenIntros));
-  alert("Intro animations reset! You'll see them again when you play.");
+  showToast("✨ Intros reset! You'll see them again.");
 }
 
 /* ---------- CHALLENGE MODE ---------- */
@@ -1810,23 +1983,25 @@ function startChallenge() {
 }
 
 function showChallengeIntro() {
+  if (!monthlyChallenge || !monthlyChallenge.month) return;
+  
   const intro = document.createElement('div');
   intro.className = 'level-intro';
   
   const daysLeft = getDaysRemaining(monthlyChallenge.month);
   
   const content = `
-    <div class="intro-title">🏆 ${monthlyChallenge.challenge_name}</div>
+    <div class="intro-title">🏆 ${monthlyChallenge.challenge_name || 'Monthly Challenge'}</div>
     <div class="intro-demo challenge-intro-content">
-      <div class="challenge-intro-desc">${monthlyChallenge.description}</div>
+      <div class="challenge-intro-desc">${monthlyChallenge.description || 'Special monthly challenge'}</div>
       <div class="challenge-intro-stats">
         <div class="challenge-stat">⏰ ${daysLeft} days left</div>
-        <div class="challenge-stat">🎯 Target: ${monthlyChallenge.target_score}</div>
+        <div class="challenge-stat">🎯 Target: ${monthlyChallenge.target_score || 100}</div>
       </div>
     </div>
     <div class="intro-text">Special monthly challenge</div>
     <div class="start-prompt" onclick="startChallengeGame()">TAP TO START</div>
-    <div class="intro-back-btn" onclick="closeChallengeIntro()">← Back to Levels</div>
+    <button class="intro-back-btn" onclick="closeChallengeIntro()">← Back to Levels</button>
   `;
   
   intro.innerHTML = content;
@@ -1876,6 +2051,9 @@ function startChallengeGame() {
   active = true;
   startTime = performance.now();
   lastFrame = performance.now();
+  
+  // Analytics
+  track('level_start', { level: 'challenge', challenge_name: monthlyChallenge?.challenge_name });
 
   document.getElementById("titleScreen").classList.add("hidden");
   document.getElementById("levelSelect").classList.add("hidden");
@@ -1883,6 +2061,10 @@ function startChallengeGame() {
   document.getElementById("game").classList.remove("hidden");
   document.getElementById("scoreDisplay").textContent = "0";
   document.getElementById("area").innerHTML = "";
+  
+  // Hide Home button during gameplay
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'none';
 
   // Apply challenge rules from JSON
   const leftZone = document.getElementById("left");
@@ -1950,11 +2132,13 @@ function beginLevel(lvl) {
   active = true;
   startTime = performance.now();
   lastFrame = performance.now();
+  
+  // Analytics
+  track('level_start', { level: lvl });
 
   // Set random swap score for Level 2 & 5 (between 5-15)
   if (lvl === 2 || lvl === 5) {
     swapScore = Math.floor(Math.random() * 11) + 5; // Random between 5-15
-    console.log(`Level ${lvl}: Swap will happen at score ${swapScore}`);
   }
 
   // Hide all screens
@@ -1964,8 +2148,15 @@ function beginLevel(lvl) {
   document.getElementById("levelComplete").classList.add("hidden");
   document.getElementById("highScore").classList.add("hidden");
   
-  // Show game
-  document.getElementById("game").classList.remove("hidden");
+  // Show game and reset any challenge theme
+  const gameEl = document.getElementById("game");
+  gameEl.classList.remove("hidden");
+  gameEl.style.background = ""; // Clear any challenge theme
+  
+  // Hide Home button during gameplay
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'none';
+  
   document.getElementById("scoreDisplay").textContent = "0";
   document.getElementById("area").innerHTML = "";
 
@@ -2084,9 +2275,6 @@ function spawn(isGraceBall = false) {
       }
     }, timeToChange);
   }
-  
-  // Restart the animation loop
-  requestAnimationFrame(loop);
 }
 
 function loop(now) {
@@ -2098,7 +2286,7 @@ function loop(now) {
   current.style.top = y + "px";
 
   const areaHeight = document.getElementById("area").clientHeight;
-  const objectHeight = 80; // All balls are now normal size
+  const objectHeight = current.offsetHeight; // Use actual ball height
 
   if (y >= areaHeight - objectHeight) {
     endGame();
@@ -2110,7 +2298,23 @@ function loop(now) {
 function performSwap() {
   const left = document.getElementById("left");
   const right = document.getElementById("right");
+  const controls = document.getElementById("controls");
   
+  // Haptic feedback (if supported)
+  if (navigator.vibrate) navigator.vibrate(40);
+  
+  // Show SWAP overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'swap-overlay';
+  overlay.innerHTML = '<div class="swap-overlay-text">🔄 SWAP!</div>';
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.remove(), 700);
+  
+  // Pulse controls
+  controls.classList.add('controls-pulse');
+  setTimeout(() => controls.classList.remove('controls-pulse'), 400);
+  
+  // Dramatic whoosh sound
   playSwapSound();
 
   // Swap the zones by adding a class that changes their gradient
@@ -2168,6 +2372,16 @@ function resetCombo() {
 
 function tap(side) {
   if (!active || !current) return;
+  
+  // Show friendly feedback if tapping during swap
+  if (swapping) {
+    // Only show once per swap to avoid spam
+    if (!window.swapToastShown) {
+      showToast("🔄 Controls swapped!");
+      window.swapToastShown = true;
+    }
+    return;
+  }
 
   let effectiveSide = side;
   
@@ -2231,15 +2445,38 @@ function tap(side) {
         colorChangeTimeout = null;
       }
       
-      // Perform swap BETWEEN balls (after explosion, before spawn)
+      // Block input during swap
+      swapping = true;
+      
+      // DRAMATIC SWAP SEQUENCE
+      const controls = document.getElementById("controls");
+      
+      // 1. Pre-swap warning: tiny tick sound
       setTimeout(() => {
+        playBeep(600, 0.05, 0.1); // Quick warning tick
+      }, 280);
+      
+      // 2. Anticipation: dim controls after ball explodes (250ms pause)
+      setTimeout(() => {
+        controls.classList.add('controls-dim');
+      }, 300);
+      
+      // 2. SWAP! Instantaneous + dramatic (at 550ms)
+      setTimeout(() => {
+        controls.classList.remove('controls-dim');
         performSwap();
+      }, 550);
+      
+      // 3. Post-swap lock + spawn grace ball (at 1150ms = 550 + 600)
+      setTimeout(() => {
+        swapping = false; // Re-enable input
+        window.swapToastShown = false; // Reset toast flag for next swap
+        spawn(true);      // grace ball (slower)
         
-        // Spawn first post-swap ball slightly slower
-        setTimeout(() => {
-          spawn(true); // true = grace ball (slower)
-        }, 450); // Wait for swap animation
-      }, 350); // After current ball is gone
+        // CRITICAL: restart the falling loop because current was null
+        lastFrame = performance.now();
+        requestAnimationFrame(loop);
+      }, 1150); // Total: 550ms anticipation + 600ms post-swap lock
       
       return; // Don't continue normal flow
     }
@@ -2269,7 +2506,23 @@ function tap(side) {
 
 function endGame() {
   active = false;
+  
+  // Ensure audio context is ready
+  ensureAudio().catch(() => {});
   playBeep(150, .3);
+  
+  // Clear any pending color changes
+  if (colorChangeTimeout) {
+    clearTimeout(colorChangeTimeout);
+    colorChangeTimeout = null;
+  }
+  
+  // Analytics
+  track('game_over', { 
+    level: currentLevel, 
+    score: score,
+    perfect: perfect && score >= 10
+  });
   
   // Screen shake
   document.getElementById("game").classList.add("shake");
@@ -2277,12 +2530,13 @@ function endGame() {
     document.getElementById("game").classList.remove("shake");
   }, 300);
 
-  // Save previous best before updating
-  const previousBest = bestScores[currentLevel] || 0;
-  const isNewHighScore = score > previousBest;
+  // Only track best scores for regular levels (not challenge)
+  const isRegularLevel = typeof currentLevel === "number";
+  const previousBest = isRegularLevel ? (bestScores[currentLevel] || 0) : 0;
+  const isNewHighScore = isRegularLevel && score > previousBest;
 
-  // Update best score
-  if (!bestScores[currentLevel] || score > bestScores[currentLevel]) {
+  // Update best score (regular levels only)
+  if (isRegularLevel && score > previousBest) {
     bestScores[currentLevel] = score;
     localStorage.setItem("bestScores", JSON.stringify(bestScores));
   }
@@ -2290,7 +2544,7 @@ function endGame() {
   // Check for unlock (only for regular levels, not challenge)
   let justUnlockedLevel = false;
   let nextLevelNum = 0;
-  if (currentLevel !== 'challenge') {
+  if (isRegularLevel) {
     const currentLevelData = levels[currentLevel - 1];
     
     if (currentLevelData && currentLevelData.unlock && score >= currentLevelData.unlock) {
@@ -2428,91 +2682,167 @@ function playNextLevel() {
 }
 
 function retry() {
-  // Skip intro animation when retrying - go straight to game
+  // Clear any existing swap state (extra safety)
+  document.getElementById("left").classList.remove("swapped-zone");
+  document.getElementById("right").classList.remove("swapped-zone");
+  
+  // If we are in challenge mode, restart challenge properly
+  if (currentLevel === 'challenge') {
+    startChallengeGame();
+    return;
+  }
+  // Otherwise normal level - skip intro animation when retrying
   beginLevel(currentLevel);
+}
+
+/* ---------- TOAST NOTIFICATIONS ---------- */
+function showToast(message, duration = 2500) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'toastFadeOut 0.3s ease-out forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
 }
 
 /* ---------- SHARE ---------- */
 async function shareScore() {
-  const text = `I panicked at ${score} 😭 Can you beat me? sortpanic.com/play`;
-  
-  // Try Android bridge first (works reliably in APK)
-  if (typeof AndroidBridge !== 'undefined' && AndroidBridge.share) {
-    AndroidBridge.share(text);
-    return;
+  const text = `I panicked at ${score} 😭 Can you beat me? https://sortpanic.com/play`;
+
+  // 1) Android WebView bridge (try several common names)
+  const bridges = [
+    window.AndroidBridge,
+    window.Android,
+    window.android,
+    window.SortPanic,
+    window.WebViewBridge
+  ].filter(Boolean);
+
+  for (const b of bridges) {
+    try {
+      if (typeof b.share === "function") { b.share(text); return; }
+      if (typeof b.shareText === "function") { b.shareText(text); return; }
+      if (typeof b.shareScore === "function") { b.shareScore(text); return; }
+    } catch (e) { /* keep trying */ }
   }
-  
-  // Try native Web Share API (works in browsers)
+
+  // 2) Native Web Share API (browser/PWA)
   if (navigator.share) {
     try {
-      await navigator.share({ text: text });
+      await navigator.share({ text });
       return;
-    } catch (err) {
-      // Fall through to clipboard
+    } catch (e) {
+      // user cancelled or share failed -> fall through
     }
   }
-  
-  // Fallback to clipboard
-  copyToClipboard(text);
-}
 
-function copyToClipboard(text) {
-  // Try modern Clipboard API first
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Score copied to clipboard! 📋\nPaste it to share with friends!');
-    }).catch(() => {
-      // Fallback to old method
-      fallbackCopy(text);
-    });
+  // 3) Clipboard (best effort)
+  const copied = await tryCopy(text);
+  if (copied) {
+    showToast("📋 Score copied! Paste to share.");
   } else {
-    fallbackCopy(text);
+    // 4) Last resort: show prompt the user can copy manually
+    window.prompt("Copy your score:", text);
   }
 }
 
-function fallbackCopy(text) {
-  const textarea = document.createElement('textarea');
-  textarea.value = text;
-  textarea.style.position = 'fixed';
-  textarea.style.opacity = '0';
-  document.body.appendChild(textarea);
-  textarea.select();
-  
+async function tryCopy(text) {
+  // Modern clipboard (may fail in some WebViews)
   try {
-    document.execCommand('copy');
-    alert('Score copied to clipboard! 📋\nPaste it to share with friends!');
-  } catch (err) {
-    alert('Could not copy score. Your score: ' + text);
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) {}
+
+  // execCommand fallback
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    ta.style.top = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) {
+    return false;
   }
-  
-  document.body.removeChild(textarea);
 }
 
 /* ---------- INPUT ---------- */
-document.getElementById("left").onclick = () => tap("left");
-document.getElementById("right").onclick = () => tap("right");
-
-// Touch events for better mobile responsiveness
-document.getElementById("left").addEventListener("touchstart", (e) => {
+// Use touchstart for mobile, with pointer event fallback
+document.getElementById("left").addEventListener("touchstart", async (e) => {
   e.preventDefault();
+  await ensureAudio();
   tap("left");
+}, { passive: false });
+
+document.getElementById("right").addEventListener("touchstart", async (e) => {
+  e.preventDefault();
+  await ensureAudio();
+  tap("right");
+}, { passive: false });
+
+// Pointer events as fallback for desktop/mouse
+document.getElementById("left").addEventListener("pointerdown", async (e) => {
+  if (e.pointerType !== 'touch') { // Don't double-trigger on touch
+    e.preventDefault();
+    await ensureAudio();
+    tap("left");
+  }
 });
 
-document.getElementById("right").addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  tap("right");
+document.getElementById("right").addEventListener("pointerdown", async (e) => {
+  if (e.pointerType !== 'touch') { // Don't double-trigger on touch
+    e.preventDefault();
+    await ensureAudio();
+    tap("right");
+  }
 });
 
 /* ---------- INIT ---------- */
 // Load monthly challenge on startup
 loadMonthlyChallenge();
 
-// Auto-init audio on first interaction
-document.addEventListener('click', () => {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-}, { once: true });
+// Register service worker for PWA
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+}
+
+// Check if app can show install nudge
+function canShowInstallNudge() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const dismissed = localStorage.getItem("installNudgeDismissed");
+  const recentlyDismissed = dismissed && (Date.now() - Number(dismissed) < 1000 * 60 * 60 * 24 * 7); // 7 days
+  return !isStandalone && !recentlyDismissed;
+}
+
+// Detect iOS
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+// Hide install prompt when app is installed
+window.addEventListener("appinstalled", () => {
+  document.getElementById('installPrompt').classList.remove('show');
+});
+
+// Show iOS-specific hint if needed (Safari only)
+if (isIOS() && canShowInstallNudge() && !window.navigator.standalone) {
+  setTimeout(() => {
+    // Only show if not already installed and user is in Safari
+    if (!/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent)) {
+      showToast("📱 Tip: Share → Add to Home Screen", 5000);
+    }
+  }, 8000); // Show after 8s on iOS
+}
 </script>
 </body>
 </html>

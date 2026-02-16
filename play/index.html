@@ -53,28 +53,6 @@ body {
 }
 
 /* Back to Home Link */
-.back-home {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.9);
-  color: #667eea;
-  padding: 8px 16px;
-  border-radius: 20px;
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
-}
-
-.back-home:hover {
-  background: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
-
 /* Animated background */
 body::before {
   content: '';
@@ -736,6 +714,46 @@ button.secondary {
   animation: fadeOut 0.3s ease-out forwards;
 }
 
+.back-home {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.back-home:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.intro-back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dark);
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  z-index: 10;
+}
+
+.intro-back-btn:active {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .intro-title {
   font-size: 42px;
   font-weight: 700;
@@ -1172,6 +1190,39 @@ button.secondary {
   }
 }
 
+/* Challenge intro styling */
+.challenge-intro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.challenge-intro-desc {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--dark);
+  text-align: center;
+  max-width: 300px;
+  line-height: 1.4;
+}
+
+.challenge-intro-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.challenge-stat {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-light);
+  padding: 8px 16px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 12px;
+}
+
 .intro-text {
   font-size: 24px;
   font-weight: 600;
@@ -1270,8 +1321,6 @@ button.secondary {
 </head>
 
 <body>
-
-<!-- Back to Home -->
 <a href="/" class="back-home">← Home</a>
 
 <!-- TITLE SCREEN -->
@@ -1430,6 +1479,7 @@ function showLevelIntro(levelId, callback) {
   switch(levelId) {
     case 1:
       content = `
+        <div class="intro-back-btn" onclick="closeIntro()">← Back</div>
         <div class="intro-title">LEVEL 1: Sort</div>
         <div class="intro-demo sort-demo-visual">
           <div class="demo-fall-area">
@@ -1451,6 +1501,7 @@ function showLevelIntro(levelId, callback) {
       
     case 2:
       content = `
+        <div class="intro-back-btn" onclick="closeIntro()">← Back</div>
         <div class="intro-title">LEVEL 2: Swap</div>
         <div class="intro-demo swap-demo-bars">
           <div class="swap-instruction">Controls will swap!</div>
@@ -1469,6 +1520,7 @@ function showLevelIntro(levelId, callback) {
       
     case 3:
       content = `
+        <div class="intro-back-btn" onclick="closeIntro()">← Back</div>
         <div class="intro-title">LEVEL 3: Fake Out</div>
         <div class="intro-demo fakeout-demo">
           <div class="demo-object blue"></div>
@@ -1480,6 +1532,7 @@ function showLevelIntro(levelId, callback) {
       
     case 4:
       content = `
+        <div class="intro-back-btn" onclick="closeIntro()">← Back</div>
         <div class="intro-title">LEVEL 4: Precision</div>
         <div class="intro-demo precision-demo">
           <div class="demo-object blue"></div>
@@ -1495,6 +1548,7 @@ function showLevelIntro(levelId, callback) {
       
     case 5:
       content = `
+        <div class="intro-back-btn" onclick="closeIntro()">← Back</div>
         <div class="intro-title">LEVEL 5: Mastery</div>
         <div class="intro-demo mastery-demo">
           <div class="mastery-icons">
@@ -1502,9 +1556,9 @@ function showLevelIntro(levelId, callback) {
             <div class="mastery-icon">🎨</div>
             <div class="mastery-icon">🎯</div>
           </div>
-          <div class="intro-text">Swap + Fake Out + Precision</div>
-          <div class="intro-subtext">Everything at once. Good luck.</div>
         </div>
+        <div class="intro-text">Swap + Fake Out + Precision</div>
+        <div class="intro-subtext">Everything at once. Good luck.</div>
       `;
       break;
   }
@@ -1547,6 +1601,16 @@ function startIntro() {
 
 function skipIntro() {
   startIntro(); // Same behavior, just different trigger
+}
+
+function closeIntro() {
+  const intro = document.querySelector('.level-intro');
+  if (intro) {
+    intro.classList.add('fade-out');
+    setTimeout(() => intro.remove(), 300);
+  }
+  // Return to level select
+  document.getElementById("levelSelect").classList.remove("hidden");
 }
 
 /* ---------- STATE ---------- */
@@ -1719,6 +1783,54 @@ function resetIntros() {
 /* ---------- CHALLENGE MODE ---------- */
 function startChallenge() {
   if (!monthlyChallenge) return;
+  
+  // Show intro screen for monthly challenge
+  showChallengeIntro();
+}
+
+function showChallengeIntro() {
+  const intro = document.createElement('div');
+  intro.className = 'level-intro';
+  
+  const daysLeft = getDaysRemaining(monthlyChallenge.month);
+  
+  const content = `
+    <div class="intro-back-btn" onclick="closeChallengeIntro()">← Back</div>
+    <div class="intro-title">🏆 ${monthlyChallenge.challenge_name}</div>
+    <div class="intro-demo challenge-intro-content">
+      <div class="challenge-intro-desc">${monthlyChallenge.description}</div>
+      <div class="challenge-intro-stats">
+        <div class="challenge-stat">⏰ ${daysLeft} days left</div>
+        <div class="challenge-stat">🎯 Target: ${monthlyChallenge.target_score}</div>
+      </div>
+    </div>
+    <div class="intro-text">Special monthly challenge</div>
+    <div class="start-prompt" onclick="startChallengeGame()">TAP TO START</div>
+  `;
+  
+  intro.innerHTML = content;
+  document.body.appendChild(intro);
+  
+  document.getElementById("levelSelect").classList.add("hidden");
+}
+
+function closeChallengeIntro() {
+  const intro = document.querySelector('.level-intro');
+  if (intro) {
+    intro.classList.add('fade-out');
+    setTimeout(() => intro.remove(), 300);
+  }
+  // Return to level select
+  document.getElementById("levelSelect").classList.remove("hidden");
+}
+
+function startChallengeGame() {
+  // Remove intro
+  const intro = document.querySelector('.level-intro');
+  if (intro) {
+    intro.classList.add('fade-out');
+    setTimeout(() => intro.remove(), 300);
+  }
   
   // Set up challenge mode
   currentLevel = 'challenge';
@@ -2289,26 +2401,26 @@ function retry() {
 
 /* ---------- SHARE ---------- */
 async function shareScore() {
-  // Use the actual score from this game, not best score
-  const shareText = `I panicked at ${score} 😭 Can you beat me?`;
+  const text = `I panicked at ${score} 😭 Can you beat me? sortpanic.com/play`;
   
+  // Try Android bridge first (works reliably in APK)
+  if (typeof AndroidBridge !== 'undefined' && AndroidBridge.share) {
+    AndroidBridge.share(text);
+    return;
+  }
+  
+  // Try native Web Share API (works in browsers)
   if (navigator.share) {
     try {
-      await navigator.share({
-        title: 'Sort Panic',
-        text: shareText,
-        url: 'https://sortpanic.com/play'
-      });
+      await navigator.share({ text: text });
+      return;
     } catch (err) {
-      // User cancelled or share failed, try clipboard
-      if (err.name !== 'AbortError') {
-        copyToClipboard(`${shareText} https://sortpanic.com/play`);
-      }
+      // Fall through to clipboard
     }
-  } else {
-    // No native share, use clipboard
-    copyToClipboard(`${shareText} https://sortpanic.com/play`);
   }
+  
+  // Fallback to clipboard
+  copyToClipboard(text);
 }
 
 function copyToClipboard(text) {

@@ -708,6 +708,8 @@ button.secondary {
   animation: fadeIn 0.3s ease-out;
   gap: 30px;
   padding: 40px;
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .level-intro.fade-out {
@@ -1321,7 +1323,7 @@ button.secondary {
 </head>
 
 <body>
-<a href="/" class="back-home">← Home</a>
+<a href="/" class="back-home" id="homeButton">← Home</a>
 
 <!-- TITLE SCREEN -->
 <div id="titleScreen" class="screen">
@@ -1571,6 +1573,13 @@ function showLevelIntro(levelId, callback) {
   intro.innerHTML = content;
   document.body.appendChild(intro);
   
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+  
+  // Hide Home button when intro is showing
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'none';
+  
   // Store callback and intro element globally for click handlers
   window.introCallback = callback;
   window.currentIntro = intro;
@@ -1583,6 +1592,10 @@ function startIntro() {
   // Mark as seen
   seenIntros[window.currentLevelIntro] = true;
   localStorage.setItem('seenIntros', JSON.stringify(seenIntros));
+  
+  // Show Home button again (game is starting)
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'block';
   
   // Fade out intro
   window.currentIntro.classList.add('fade-out');
@@ -1609,6 +1622,11 @@ function closeIntro() {
     intro.classList.add('fade-out');
     setTimeout(() => intro.remove(), 300);
   }
+  // Restore body scroll
+  document.body.style.overflow = '';
+  // Show Home button again
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'block';
   // Return to level select
   document.getElementById("levelSelect").classList.remove("hidden");
 }
@@ -1811,6 +1829,13 @@ function showChallengeIntro() {
   intro.innerHTML = content;
   document.body.appendChild(intro);
   
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+  
+  // Hide Home button when intro is showing
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'none';
+  
   document.getElementById("levelSelect").classList.add("hidden");
 }
 
@@ -1820,6 +1845,9 @@ function closeChallengeIntro() {
     intro.classList.add('fade-out');
     setTimeout(() => intro.remove(), 300);
   }
+  // Show Home button again
+  const homeBtn = document.getElementById('homeButton');
+  if (homeBtn) homeBtn.style.display = 'block';
   // Return to level select
   document.getElementById("levelSelect").classList.remove("hidden");
 }

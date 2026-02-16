@@ -831,6 +831,7 @@ button.secondary {
   background: var(--pink);
   animation: fallAndDisappear 3s ease-in infinite;
   animation-delay: 1.5s;
+  opacity: 0; /* Start invisible, animation will show it */
 }
 
 @keyframes fallAndDisappear {
@@ -1590,7 +1591,7 @@ function startIntro() {
   // Restore body scroll
   document.body.style.overflow = '';
   
-  // Show Home button again (game is starting)
+  // Show Home button again
   const homeBtn = document.getElementById('homeButton');
   if (homeBtn) homeBtn.style.display = 'block';
   

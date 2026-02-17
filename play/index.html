@@ -113,6 +113,14 @@ body::before {
   overflow-y: auto;
   max-height: 100dvh;
   justify-content: flex-start !important; /* Override .screen centering */
+  /* Hide scrollbar but keep scroll */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#levelSelect::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .level-tile {
@@ -845,6 +853,13 @@ button.secondary {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding: 0 4px;
+  /* Hide scrollbar everywhere */
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge */
+}
+
+.level-intro-inner::-webkit-scrollbar {
+  display: none;                /* Chrome/Safari/Android */
 }
 
 .back-home {

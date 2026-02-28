@@ -1,9 +1,14 @@
 {
-  "month": "2026-02",
-  "challenge_name": "Speed Demon",
-  "target_score": 80,
-  "ball_speed_multiplier": 1.75,
-  "time_limit": 60,
-  "theme_color": null,
-  "description": "Sort faster than ever!"
+  "month": "2025-03",
+  "challenge_name": "March Madness",
+  "description": "Controls swap at random scores",
+  "target_score": 100,
+  "swap_controls": true,
+  "color_change_chance": 0.2,
+  "narrow_zones": false,
+  "ball_size": 80,
+  "ball_speed_multiplier": 1.1,
+  "grace_ball_multiplier": 0.8,
+  "color_change_pause_ms": 85,
+  "theme_color": ""
 }

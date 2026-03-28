@@ -1,14 +1,14 @@
 {
-  "month": "2026-03",
-  "challenge_name": "March Madness",
-  "description": "Controls swap at random scores",
-  "target_score": 100,
-  "swap_controls": true,
-  "color_change_chance": 0.2,
+  "month": "2026-04",
+  "challenge_name": "April Showers",
+  "description": "Colors shift like spring weather",
+  "target_score": 85,
+  "swap_controls": false,
+  "color_change_chance": 0.5,
   "narrow_zones": false,
   "ball_size": 80,
-  "ball_speed_multiplier": 1.1,
+  "ball_speed_multiplier": 1.0,
   "grace_ball_multiplier": 0.8,
-  "color_change_pause_ms": 85,
+  "color_change_pause_ms": 100,
   "theme_color": ""
 }

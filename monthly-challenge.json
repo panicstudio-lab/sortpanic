@@ -1,14 +1,14 @@
 {
   "month": "2026-06",
-  "challenge_name": "Summer Solstice",
-  "description": "The longest day meets the toughest challenge",
-  "target_score": 150,
-  "swap_controls": true,
-  "color_change_chance": 0.4,
+  "challenge_name": "Graduation Challenge",
+  "description": "Prove your mastery. No luck, just skill.",
+  "target_score": 130,
+  "swap_controls": false,
+  "color_change_chance": 0.0,
   "narrow_zones": true,
-  "ball_size": 65,
-  "ball_speed_multiplier": 1.35,
-  "grace_ball_multiplier": 0.75,
-  "color_change_pause_ms": 75,
+  "ball_size": 55,
+  "ball_speed_multiplier": 1.4,
+  "grace_ball_multiplier": 0.7,
+  "color_change_pause_ms": 85,
   "theme_color": ""
-}
+}}

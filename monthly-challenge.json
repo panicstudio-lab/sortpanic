@@ -1,14 +1,14 @@
 {
-  "month": "2026-07",
-  "challenge_name": "Summer Heat",
-  "description": "Intense, fast, relentless",
-  "target_score": 125,
+  "month": "2026-08",
+  "challenge_name": "Dog Days",
+  "description": "Hot, hazy, and unpredictable",
+  "target_score": 105,
   "swap_controls": true,
-  "color_change_chance": 0.4,
+  "color_change_chance": 0.3,
   "narrow_zones": false,
-  "ball_size": 75,
-  "ball_speed_multiplier": 1.4,
-  "grace_ball_multiplier": 0.75,
-  "color_change_pause_ms": 75,
+  "ball_size": 80,
+  "ball_speed_multiplier": 1.1,
+  "grace_ball_multiplier": 0.8,
+  "color_change_pause_ms": 90,
   "theme_color": ""
 }

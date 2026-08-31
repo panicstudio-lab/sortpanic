@@ -10,5 +10,5 @@
   "ball_speed_multiplier": 1.2,
   "grace_ball_multiplier": 0.75,
   "color_change_pause_ms": 85,
-  "theme_color": "linear-gradient(135deg, #DAA520, #CD853F, #8B4513)"
+  "theme_color": ""
 }
